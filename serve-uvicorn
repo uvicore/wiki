@@ -1,0 +1,4 @@
+# Best to use ./uvicore http serve
+# But here is an alternate for testing
+
+uvicorn mreschke.wiki.http.server:http --host=127.0.0.1 --port=5000 --reload

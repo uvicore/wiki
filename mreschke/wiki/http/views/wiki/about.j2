@@ -1,0 +1,26 @@
+{% extends "wiki/layout.j2" %}
+
+
+
+{% block content %}
+
+This is about jinja2
+<br>
+
+{{url('about')}}
+<br>
+
+{{url2('about')}}
+<br>
+
+{{"asdfasdasdf" | up}}
+<br>
+
+{% if 42 is prime %}
+    42 is a prime number
+{% else %}
+    42 is not a prime number
+{% endif %}
+<br>
+
+{% endblock content %}
