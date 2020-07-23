@@ -1,32 +1,73 @@
 import typer
-from uvicore import app, config
+import uvicore
+#from uvicore import app, config
 #from uvicore.db import SessionLocal, engine, Model
 #from .. import models
 #from fastapi import Depends
 #from sqlalchemy.orm import Session
+from uvicore.support.dumper import dump, dd
 
 #from mreschke.wiki import db
 
-
+# Commands
 cli = typer.Typer()
+
 
 @cli.command()
 def test():
     """Wiki Test command"""
 
-    from mreschke.wiki.models.user import User
-    user = User.find(1)
-    print(user)
-    print(user.name)
+    # Manuall get app singleton
+    from uvicore.contracts import Application
+    app: Application = uvicore.ioc.make('app')
+    dump(app.config('app.name'))
 
-    print('----')
+    dump('x')
 
-    users = User.all()
-    print(users)
-    for user in users:
-        print(user.hi())
+    # Can manually get config too
+    config = uvicore.ioc.make('config')
+    dump(config('app.name'))
 
-    print('----')
+    # Log example
+    uvicore.log.header('hi')
+
+    # Pull log from IoC
+    log = uvicore.ioc.make('Logger')
+
+    log.header('there')
+    #dd(uvicore.ioc.bindings)
+
+
+    # module = 'uvicore'
+    # parts = module.split('.')
+    # path = '.'.join(parts[0:-1])
+    # name = ''.join(parts[-1:])
+
+    # if path == '': path = module
+    # imported = import_module(path)
+    # dd(getattr(imported, name))
+
+    wiki = app.package('mreschke.wiki')
+    dd(wiki.config())
+
+
+    dd('test done')
+
+
+
+    # from mreschke.wiki.models.user import User
+    # user = User.find(1)
+    # print(user)
+    # print(user.name)
+
+    # print('----')
+
+    # users = User.all()
+    # print(users)
+    # for user in users:
+    #     print(user.hi())
+
+    # print('----')
 
     # print(User)
     #db: Session = Depends(get_db)

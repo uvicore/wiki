@@ -9,11 +9,11 @@ from uvicore.configuration import env
 # App config is only for when this app is RUNNING as a server
 # It is not meant to be overwritten when its included as a LIBRARY
 
-app = {
+config = {
     # Package Info
     'name': 'wiki',
     'vendor': 'mreschke',
-    'module': 'mreschke.wiki',
+    'package': 'mreschke.wiki',
     'config_prefix': 'mreschke.wiki',
     'debug': False,
 
@@ -35,12 +35,36 @@ app = {
     },
 
     # Inversion of Control (IoC) Concrete Implimentation Overrides
-    # See uvicore/foundation/ioc.py for a list of all possible mappings
+    # See uvicore/container/ioc.py for a list of all possible mappings
     'ioc': {
         'Application': {
-            'object': 'uvicore.foundation.application._Application',
+            #'object': 'uvicore.foundation.application._Application',
+            'object': 'mreschke.wiki.support.overrides.application.Application',
             'singleton': True,
             'aliases': ['App']
+        },
+        'Package': {
+            #'object': 'uvicore.foundation.package._Package',
+            'object': 'mreschke.wiki.support.overrides.package.Package',
+            'aliases': ['package']
+        },
+    },
+
+    # Configure logger
+    # The uvicore.logger packages does NOT provide its own config
+    # because it needs to load super early in the bootstrap process.
+    # So we define the logger config right here instead.
+    'logger': {
+        'console': {
+            'enabled': env.bool('LOG_CONSOLE_ENABLED', True),
+            'level': env('LOG_CONSOLE_LEVEL', 'WARNING'),
+            'colors': env.bool('LOG_CONSOLE_COLORS', True),
+        },
+        'file': {
+            'enabled': env.bool('LOG_FILE_ENABLED', True),
+            'level': env('LOG_FILE_LEVEL', 'WARNING'),
+            #'file': config.LOG_PATH + '/' + date.today().strftime('%Y-%m-%d') + '_permits.log',
+            'file': '/tmp/uvicore.log',
         }
     },
 
@@ -67,35 +91,20 @@ app = {
     # For configs, last one wins
     # For jinja view folders, last one wins ?? double check
     # For jinja globals, last one wins ?? double check
-    'providers': [
-        ('uvicore.foundation', 'providers.Foundation'),
-        #('mrcore.auth', 'providers.AuthServiceProvider'),
-        #('mrcore.cache', 'providers.CacheServiceProvider'),
 
-        # Application (must be last to win in overrides)
-        ('mreschke.wiki', 'providers.Wiki'),
-    ],
-
-    # Package Dependencies (JUST PLAYING)
-    'packages': [
-        {
-            #'name': 'foundation',
-            'module': 'uvicore.foundation',
-            'provider': 'uvicore.foundation.providers.Foundation'
+    'services': {
+        'uvicore.logging': {
+            'provider': 'uvicore.logging.services.Logging',
+            #'config': 'uvicore.logging.config.app.config',
         },
-        {
-            #'name': 'wiki',
-            'module': 'mreschke.wiki',
+
+        'uvicore.foundation': {
+            'provider': 'uvicore.foundation.providers.Foundation',
+        },
+
+        'mreschke.wiki': {
             'provider': 'mreschke.wiki.providers.Wiki',
         },
-    ],
-
-    'experimental_providers_like_mrcore_modules': {
-        'mreschke.blog': {
-            'console_only': True
-            # cant think of anything else, like dynaron/theme
-            # all those configs shouldn't live here, but in theme.py config itself
-        }
-    }
+    },
 
 }

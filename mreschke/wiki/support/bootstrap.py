@@ -15,7 +15,7 @@ def application(is_console: bool = False) -> ApplicationInterface:
     Env().read_env(base_path + '/.env')
 
     # Import this apps config (import must be after Env())
-    from ..config.app import app as app_config
+    from ..config.app import config as app_config
 
     # Bind bootstrap level IoC overrides
     uvicore.ioc.bind_map(app_config['ioc'])
@@ -30,11 +30,29 @@ def application(is_console: bool = False) -> ApplicationInterface:
     #     aliases=['App']
     # )
 
+    # Exampel if making an object with a factory
+    # uvicore.ioc.bind(
+    #     name='Logger',
+    #     object='uvicore.support.logger._Logger',
+    #     #factory='uvicore.factory.logger.Logger',
+    #     # If factory, kwargs are for factory
+    #     kwargs={'config': app_config['logger']},
+    #     singleton=True,
+    #     aliases=['Log', 'log', 'logger']
+    # )
+
+
+
     # Instantiate the Application into the uvicore.app instance
     uvicore.app = uvicore.ioc.make('Application')
+    #dd(uvicore.app)
 
     # Bootstrap the Uvicore Application (Either CLI or HTTP entry points based on is_console)
     uvicore.app.bootstrap(app_config, base_path, is_console)
+
+    wiki = uvicore.app.package('mreschke.wiki')
+    dd(wiki.config('route'))
+    dd('hi')
 
     # If you wanted to get the instance of the app without import
     # just make it from its IoC singleton
@@ -60,7 +78,7 @@ def application(is_console: bool = False) -> ApplicationInterface:
     #dump(app.config())
 
     #wiki = uvicore.app.package('wiki')
-    #dd(wiki)
+    #dd(wiki.config('route'))
     #dump(wiki.config())
 
     #dump(app.config('wiki'))
