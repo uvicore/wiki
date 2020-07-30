@@ -1,8 +1,24 @@
-# Entire blog config is meant to be overwritten when
-# you include it as a library.  For example in a CMS
-# you might change the route_prefix to /blog instead of /
-
+# This is the main wiki config.  All items here can be overridden
+# when used inside other applications.  Accessible at config('mreschke.wiki')
 config = {
+
+    # --------------------------------------------------------------------------
+    # Registration Control
+    # --------------------------------------------------------------------------
+    # This lets you control the service provider registrations.  If this app
+    # is used as a package inside another app you might not want some things
+    # registered in that context.
+    'register_web_routes': True,
+    'register_api_routes': True,
+    'register_views': True,
+    'register_assets': True,
+    'register_commands': True,
+    # ??register_configs??
+
+
+    # --------------------------------------------------------------------------
+    # Route Configuration
+    # --------------------------------------------------------------------------
     # Or like so, no underscores, so in dot notation config('blog.route.prefix')
     # have to do deep merges
     'route': {
@@ -22,6 +38,10 @@ config = {
     # So cannot say APP MODE
     # Standalone has to have word APP after it, standalone mode or standalone app
 
+
+    # --------------------------------------------------------------------------
+    # Database Connections
+    # --------------------------------------------------------------------------
     'database': {
         'default': 'wiki',
         'connections': {
@@ -52,14 +72,6 @@ config = {
     # Bundle?  Canot use package, that is pythonic, all apps/libs ARE packages
 
 
-    # These let you control the service provider
-    # Maybe you want the library part but want NO web part, no routes, no views
-    'register_web_routes': True,
-    'register_api_routes': True,
-    'register_views': True,
-    'register_assets': True,
-    'register_commands': True,
-    # ??register_configs??
 
     #include API also, yes/no, maybe that goes with register_routes
 
@@ -71,7 +83,4 @@ config = {
     # which parts are used (views, routes, or just cli and code)
 
 
-
-
-    'key1': 'blog.key1 config here',
 }

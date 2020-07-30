@@ -18,5 +18,4 @@ async def about(request: Request):
 
 @route.get('/about2')
 async def about2(request):
-    #return PlainTextResponse('About2')
-    return templates.TemplateResponse('wiki/about.j2', {'request': request})
+    return response.Text('/about2 plain text')

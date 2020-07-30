@@ -48,8 +48,10 @@ def test():
     # dd(getattr(imported, name))
 
     wiki = app.package('mreschke.wiki')
-    dd(wiki.config())
+    dump(wiki.config())
 
+
+    log('hi')
 
     dd('test done')
 

@@ -6,6 +6,9 @@ from uvicore.support.dumper import dd, dump
 
 def application(is_console: bool = False) -> ApplicationInterface:
     """Bootstrap the application either from the CLI or Web entry points
+
+    Bootstrap only runs when this package is running as the main app via
+    ./uvicore or uvicorn/gunicorn server
     """
 
     # Base path
@@ -50,9 +53,6 @@ def application(is_console: bool = False) -> ApplicationInterface:
     # Bootstrap the Uvicore Application (Either CLI or HTTP entry points based on is_console)
     uvicore.app.bootstrap(app_config, base_path, is_console)
 
-    wiki = uvicore.app.package('mreschke.wiki')
-    dd(wiki.config('route'))
-    dd('hi')
 
     # If you wanted to get the instance of the app without import
     # just make it from its IoC singleton

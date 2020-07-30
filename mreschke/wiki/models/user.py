@@ -42,6 +42,8 @@ class Entity(Generic[E], BaseModel):
 
 
 class User(Entity):
+    """Description, this shows up in openapi schemas section"""
+
     id: Optional[int]
     name: str
 

@@ -1,31 +1,21 @@
+from collections import OrderedDict
 from uvicore.configuration import env
 
-# App and providers DO run if APP or LIBRARY mode
-# Because even if module, it is a dependency graph
-# So provider IMPORTER needs to not import things twice
-
-# Providers should be a recursive dependency graph
-
-# App config is only for when this app is RUNNING as a server
-# It is not meant to be overwritten when its included as a LIBRARY
 
 config = {
-    # Package Info
-    'name': 'wiki',
-    'vendor': 'mreschke',
-    'package': 'mreschke.wiki',
-    'config_prefix': 'mreschke.wiki',
+
+    # --------------------------------------------------------------------------
+    # App Information
+    # --------------------------------------------------------------------------
+    'name': 'My Wiki',
+    'main': 'mreschke.wiki',
     'debug': False,
 
-    # OpenAPI
-    'openapi': {
-        'title': 'Wiki API Docs',
-        'url': '/openapi.json',
-        'docs_url': '/docs',
-        'redoc_url': '/redoc',
-    },
 
-    # Uvicorn Dev Server (./uvicore http serve)
+    # --------------------------------------------------------------------------
+    # Uvicorn Development Server
+    # --------------------------------------------------------------------------
+    # This configures the dev server when you run `./uvicore http serve`
     'server': {
         'app': 'mreschke.wiki.http.server:http',
         'host': env('SERVER_HOST', '127.0.0.1'),
@@ -34,26 +24,97 @@ config = {
         'access_log': env.bool('SERVER_ACCESS_LOG', True),
     },
 
+
+    # --------------------------------------------------------------------------
+    # OpenAPI Auto API Doc Configuration
+    # --------------------------------------------------------------------------
+    'openapi': {
+        'title': 'Wiki API Docs',
+        'url': '/openapi.json',
+        'docs_url': '/docs',
+        'redoc_url': '/redoc',
+    },
+
+    # --------------------------------------------------------------------------
+    # Package Dependencies (Service Providers)
+    # --------------------------------------------------------------------------
+    # Packages add functionality to your applications.  In fact your app itself
+    # is a package that can be used inside any other app.  Uvicore framework is
+    # also split into packages which use services providers to inject core
+    # functionality.  Order matters for override/deep merge purposes.  Each
+    # package overrides items of the previous, so the last package wins.
+    # Example, configs defined with the same key are deep merged with last
+    # one winning. Defining your actual apps package last means it will win
+    # in all override battles.
+    # Overrides include: providers, configs, views, templates, assets
+    'packages': OrderedDict({
+        # # Uvicore Framework Service Providers
+        # 'uvicore.foundation': {
+        #     # Foundation itself is a package which relies on many other services
+        #     # like configuration, logging...all of which you can override.
+        #     'provider': 'uvicore.foundation.services.Foundation',
+        #     #'config': 'uvicore.logging.config.app.config',
+        # },
+
+        # EXAMPLE.  You can override any service provider by simply providing
+        # your own provider with the same key.  To override the logger you have
+        # two options.  Either override the entire service provider with your
+        # own like this.  Or use the 'bindings' array below to override just the
+        # class that is used in the original uvicore logging service provider.
+        # 'uvicore.logging': {
+        #     'provider': 'mreschke.wiki.services.logging.Logging',
+        # },
+
+        # Application Service Providers
+        'mreschke.wiki': {
+            'provider': 'mreschke.wiki.services.wiki.Wiki',
+        },
+    }),
+
+
+    # --------------------------------------------------------------------------
+    # Service Provider Binding Definitions
+    # --------------------------------------------------------------------------
+    # Most service providers bind classes into the IoC.  Most uvicore framework
+    # providers will lookup this array to let you override which classes they
+    # actually bind into the container.  This lets you quickly override an
+    # existing service provider binding without actually using the 'services'
+    # array above to define your own complete service provider.  Often times
+    # simply overriding the bound class is good enough.
+    'bindings': {
+        'Logger': 'mreschke.wiki.services.framework.logger.Logger',
+        'Configuration': 'mreschke.wiki.services.framework.configuration.Configuration',
+    },
+
+
+    # --------------------------------------------------------------------------
     # Inversion of Control (IoC) Concrete Implimentation Overrides
-    # See uvicore/container/ioc.py for a list of all possible mappings
+    # --------------------------------------------------------------------------
+    # Many core or small classes do not use service providers at all.  But all
+    # classes use the IoC for their implimentation to allow you to override
+    # anything, even the smallest of classes.  Use this section to override all
+    # other non service provider based classes.  If the array is empty the
+    # defaults in `uvicore/container/ioc.py` are used.
     'ioc': {
         'Application': {
-            #'object': 'uvicore.foundation.application._Application',
-            'object': 'mreschke.wiki.support.overrides.application.Application',
+            'object': 'mreschke.wiki.services.framework.application.Application',
             'singleton': True,
             'aliases': ['App']
         },
         'Package': {
             #'object': 'uvicore.foundation.package._Package',
-            'object': 'mreschke.wiki.support.overrides.package.Package',
+            'object': 'mreschke.wiki.services.framework.package.Package',
             'aliases': ['package']
         },
     },
 
-    # Configure logger
+
+    # --------------------------------------------------------------------------
+    # Logging Configuration
+    # --------------------------------------------------------------------------
     # The uvicore.logger packages does NOT provide its own config
     # because it needs to load super early in the bootstrap process.
-    # So we define the logger config right here instead.
+    # So we define the logger config right here instead.  Tweak as needed.
     'logger': {
         'console': {
             'enabled': env.bool('LOG_CONSOLE_ENABLED', True),
@@ -68,43 +129,7 @@ config = {
         }
     },
 
-    # Package paths (allows you to re-organize your app file structure)
-    # So far NONE are used, because the service provide handles most explicitly
-    # And do I really care?  It is an opinionated framework after all
-    #'paths': {
-        #'server': 'mreschke.wiki.http.server.http',
-        #'controllers': 'mreschke.wiki.http.controllers',
-        #'public': 'mreschke.wiki.http.public',
-        #'views': 'mreschke.wiki.http.views',
-        #'commands': 'mreschke.wiki.commands',
-    #},
 
     # Add more laravel stuff, locale, timezone etc...
-
-    # Dependent Package Service Providers
-    # Order matters for override/deep merge purposes
-    # Each provider overrides items of the previous, so the last provider wins
-    # Example, configs defined with the same key are deep merged with last one winning
-    # So define this actual app LAST to override all
-
-    # Overrides - We want last one to win on everything
-    # For configs, last one wins
-    # For jinja view folders, last one wins ?? double check
-    # For jinja globals, last one wins ?? double check
-
-    'services': {
-        'uvicore.logging': {
-            'provider': 'uvicore.logging.services.Logging',
-            #'config': 'uvicore.logging.config.app.config',
-        },
-
-        'uvicore.foundation': {
-            'provider': 'uvicore.foundation.providers.Foundation',
-        },
-
-        'mreschke.wiki': {
-            'provider': 'mreschke.wiki.providers.Wiki',
-        },
-    },
 
 }

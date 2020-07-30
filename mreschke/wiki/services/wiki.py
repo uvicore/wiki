@@ -1,13 +1,12 @@
 import uvicore
 from uvicore import log
-from uvicore.contracts import Application, Package
 from uvicore.support.provider import ServiceProvider
+from uvicore.support.dumper import dump, dd
 
 
 class Wiki(ServiceProvider):
 
-    def register(self, app: Application) -> None:
-        log('wiki provider.register()')
+    def register(self) -> None:
         """Register package into uvicore framework.
         All packages are registered before the framework boots.  This is where
         you define your packages configs and IoC bindings.  Configs are deep merged only after
@@ -15,41 +14,62 @@ class Wiki(ServiceProvider):
         is very early in the bootstraping process and most internal processes are not
         instantiated yet.
         """
+
+        log('wiki provider.register()')
+
         # Register configs
         # If config key already exists items will be deep merged allowing
         # you to override small peices of other package configs
         self.configs([
             # This package (prefix must match your config.app.py config_prefix)
-            {'key': 'mreschke.wiki', 'module': 'mreschke.wiki.config.wiki.config'},
+            {'key': self.name, 'module': 'mreschke.wiki.config.wiki.config'},
+            #{'key': self.name, 'module': 'mreschke.wiki.config.database.config'},
 
             # Foundation exists, so this is a deep merge override
             {'key': 'uvicore.foundation', 'module': 'mreschke.wiki.config.uvicore.foundation.config'},
         ])
 
-    def boot(self, app: Application, package: Package) -> None:
-        log('wiki provider.boot()')
+
+        # # Test override logging binding
+        # # Register IoC bindings
+        # self.bind(
+        #     name='Logger',
+        #     object='mreschke.wiki.services.logging.Logging',
+        #     kwargs={'config': uvicore.config('app.logger')},
+        #     singleton=True,
+        #     aliases=['Log', 'log', 'logger']
+        # )
+
+        # # Set uvicore.log global
+        # uvicore.log = uvicore.ioc.make('Logger')
+
+
+    def boot(self) -> None:
         """Bootstrap package into uvicore framework.
         Boot takes place after all packages are registered.  This means all package
         configs are deep merged to provide a complete and accurate view of all configs.
         This is where you load views, assets, routes, commands...
         """
+
+        log('wiki provider.boot()')
+
         # Define view and asset paths and configure the templating system
-        self.load_views(app, package)
+        self.load_views()
 
         # Define Web and API routers
-        self.load_routes(app, package)
+        self.load_routes()
 
         # Define CLI commands to be added to the ./uvicore command line interface
-        self.load_commands(app, package)
+        self.load_commands()
 
-    def load_views(self, app: Application, package: Package) -> None:
+    def load_views(self) -> None:
         """Define view and asset paths and configure the templating system
         """
         # Add view paths
-        self.views(package, ['mreschke.wiki.http.views'])
+        self.views(['mreschke.wiki.http.views'])
 
         # Add asset paths
-        self.assets(package, [
+        self.assets([
             'mreschke.wiki.http.static2',  #foundation example - BLUE
             'mreschke.wiki.http.static',     # wiki override example - RED
         ])
@@ -74,7 +94,7 @@ class Wiki(ServiceProvider):
             return True
 
         # Add custom template options
-        self.template(package, {
+        self.template({
             'context_functions': [
                 {'name': 'url2', 'method': url_method}
             ],
@@ -94,11 +114,11 @@ class Wiki(ServiceProvider):
 
 
 
-    def load_routes(self, app: Application, package: Package) -> None:
+    def load_routes(self) -> None:
         """Define Web and API router
         """
-        self.web_routes(package, 'mreschke.wiki.http.routes.web.Web')
-        self.api_routes(package, 'mreschke.wiki.http.routes.api.API')
+        self.web_routes('mreschke.wiki.http.routes.web.Web')
+        self.api_routes('mreschke.wiki.http.routes.api.API')
 
         # Debug
         # if app.is_http:
@@ -108,10 +128,10 @@ class Wiki(ServiceProvider):
         #     app.dump("----end")
         #     #app.dd('x')
 
-    def load_commands(self, app: Application, package: Package) -> None:
+    def load_commands(self) -> None:
         """Define CLI commands to be added to the ./uvicore command line interface
         """
-        self.commands(package, [
+        self.commands([
             {
                 'group': {
                     'name': 'wiki',
