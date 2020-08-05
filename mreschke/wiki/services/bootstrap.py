@@ -1,10 +1,9 @@
 import uvicore
 from uvicore.configuration import Env
 from uvicore.support import path
-from uvicore.contracts import Application as ApplicationInterface
 from uvicore.support.dumper import dd, dump
 
-def application(is_console: bool = False) -> ApplicationInterface:
+def application(is_console: bool = False) -> None:
     """Bootstrap the application either from the CLI or Web entry points
 
     Bootstrap only runs when this package is running as the main app via
@@ -37,7 +36,7 @@ def application(is_console: bool = False) -> ApplicationInterface:
     # uvicore.ioc.bind(
     #     name='Logger',
     #     object='uvicore.support.logger._Logger',
-    #     #factory='uvicore.factory.logger.Logger',
+    #     #factory='uvicore.factories.Logger',
     #     # If factory, kwargs are for factory
     #     kwargs={'config': app_config['logger']},
     #     singleton=True,
@@ -49,6 +48,9 @@ def application(is_console: bool = False) -> ApplicationInterface:
     # Instantiate the Application into the uvicore.app instance
     uvicore.app = uvicore.ioc.make('Application')
     #dd(uvicore.app)
+
+    # Instantiate the Event system into the uvicore.events instance
+    uvicore.events = uvicore.ioc.make('Dispatcher')
 
     # Bootstrap the Uvicore Application (Either CLI or HTTP entry points based on is_console)
     uvicore.app.bootstrap(app_config, base_path, is_console)

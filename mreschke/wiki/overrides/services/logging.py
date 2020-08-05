@@ -25,7 +25,7 @@ class Logging(ServiceProvider):
         # Register IoC bindings
         self.bind(
             name='Logger',
-            object='mreschke.wiki.services.framework.logger.Logger',
+            object='mreschke.wiki.overrides.logger.Logger',
             kwargs={'config': uvicore.config('app.logger')},
             singleton=True,
             aliases=['Log', 'log', 'logger']

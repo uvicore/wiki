@@ -17,6 +17,11 @@ cli = typer.Typer()
 def test():
     """Wiki Test command"""
 
+    uvicore.config.merge('mreschke.wiki.database', {'test': 'hi'})
+    dd(uvicore.config('mreschke.wiki'))
+
+
+
     # Manuall get app singleton
     from uvicore.contracts import Application
     app: Application = uvicore.ioc.make('app')

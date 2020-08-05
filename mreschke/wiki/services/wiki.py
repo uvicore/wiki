@@ -21,7 +21,7 @@ class Wiki(ServiceProvider):
         # If config key already exists items will be deep merged allowing
         # you to override small peices of other package configs
         self.configs([
-            # This package (prefix must match your config.app.py config_prefix)
+            # Here self.name is your packages name (ie: mreschke.wiki).
             {'key': self.name, 'module': 'mreschke.wiki.config.wiki.config'},
             #{'key': self.name, 'module': 'mreschke.wiki.config.database.config'},
 
@@ -110,9 +110,6 @@ class Wiki(ServiceProvider):
         })
         # Optionally, hack jinja to add anything possible like so
         #app.jinja.env.globals['whatever'] = somefunc
-
-
-
 
     def load_routes(self) -> None:
         """Define Web and API router

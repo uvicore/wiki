@@ -48,13 +48,13 @@ config = {
     # in all override battles.
     # Overrides include: providers, configs, views, templates, assets
     'packages': OrderedDict({
-        # # Uvicore Framework Service Providers
-        # 'uvicore.foundation': {
-        #     # Foundation itself is a package which relies on many other services
-        #     # like configuration, logging...all of which you can override.
-        #     'provider': 'uvicore.foundation.services.Foundation',
-        #     #'config': 'uvicore.logging.config.app.config',
-        # },
+        # Application Service Providers
+        'mreschke.wiki': {
+            'provider': 'mreschke.wiki.services.wiki.Wiki',
+        },
+
+
+        # Overrides to service providers used must come after all packages.
 
         # EXAMPLE.  You can override any service provider by simply providing
         # your own provider with the same key.  To override the logger you have
@@ -62,13 +62,13 @@ config = {
         # own like this.  Or use the 'bindings' array below to override just the
         # class that is used in the original uvicore logging service provider.
         # 'uvicore.logging': {
-        #     'provider': 'mreschke.wiki.services.logging.Logging',
+        #     'provider': 'mreschke.wiki.overrides.services.logging.Logging',
         # },
 
-        # Application Service Providers
-        'mreschke.wiki': {
-            'provider': 'mreschke.wiki.services.wiki.Wiki',
-        },
+        # # Example
+        # 'uvicore.console': {
+        #     'provider': 'mreschke.wiki.overrides.services.console.Console',
+        # },
     }),
 
 
@@ -82,8 +82,9 @@ config = {
     # array above to define your own complete service provider.  Often times
     # simply overriding the bound class is good enough.
     'bindings': {
-        'Logger': 'mreschke.wiki.services.framework.logger.Logger',
-        'Configuration': 'mreschke.wiki.services.framework.configuration.Configuration',
+        'Logger': 'mreschke.wiki.overrides.logger.Logger',
+        'Configuration': 'mreschke.wiki.overrides.configuration.Configuration',
+        'Console': 'mreschke.wiki.overrides.console.cli',
     },
 
 
@@ -97,13 +98,13 @@ config = {
     # defaults in `uvicore/container/ioc.py` are used.
     'ioc': {
         'Application': {
-            'object': 'mreschke.wiki.services.framework.application.Application',
+            'object': 'mreschke.wiki.overrides.application.Application',
             'singleton': True,
             'aliases': ['App']
         },
         'Package': {
             #'object': 'uvicore.foundation.package._Package',
-            'object': 'mreschke.wiki.services.framework.package.Package',
+            'object': 'mreschke.wiki.overrides.package.Package',
             'aliases': ['package']
         },
     },
