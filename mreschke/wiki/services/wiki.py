@@ -15,7 +15,7 @@ class Wiki(ServiceProvider):
         instantiated yet.
         """
 
-        log('wiki provider.register()')
+        #log('wiki provider.register()')
 
         # Register configs
         # If config key already exists items will be deep merged allowing
@@ -28,7 +28,6 @@ class Wiki(ServiceProvider):
             # Foundation exists, so this is a deep merge override
             {'key': 'uvicore.foundation', 'module': 'mreschke.wiki.config.uvicore.foundation.config'},
         ])
-
 
         # # Test override logging binding
         # # Register IoC bindings
@@ -43,7 +42,6 @@ class Wiki(ServiceProvider):
         # # Set uvicore.log global
         # uvicore.log = uvicore.ioc.make('Logger')
 
-
     def boot(self) -> None:
         """Bootstrap package into uvicore framework.
         Boot takes place after all packages are registered.  This means all package
@@ -51,7 +49,7 @@ class Wiki(ServiceProvider):
         This is where you load views, assets, routes, commands...
         """
 
-        log('wiki provider.boot()')
+        #log('wiki provider.boot()')
 
         # Define view and asset paths and configure the templating system
         self.load_views()

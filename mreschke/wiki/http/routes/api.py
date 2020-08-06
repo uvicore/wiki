@@ -1,13 +1,16 @@
-from uvicore.http import APIRouter, Routes
+from uvicore.http.routing import ApiRouter, Routes
 from uvicore.support.dumper import dump, dd
 from uvicore import app, config
 
 
-class API(Routes[APIRouter]):
+class API(Routes[ApiRouter]):
 
     endpoints: str = 'mreschke.wiki.http.api'
 
     def register(self):
+        # Available instance variables:
+        # self.app, self.package, self.Router, self.prefix
+
         # If you defined a self.endpoints you can use string based module lookup
         self.include('user', tags=['Users'])
 

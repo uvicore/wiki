@@ -1,7 +1,6 @@
 import uvicore
 from uvicore.support.click import click, group_kargs
 
-
 @click.group(**group_kargs, help=f"""
     \b
     Uvicore 99.99

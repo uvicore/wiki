@@ -1,9 +1,9 @@
 from typing import List
 
 from mreschke.wiki.models.user import User
-from uvicore.http import APIRouter
+from uvicore.http.routing import ApiRouter
 
-route = APIRouter()
+route = ApiRouter()
 
 #@route.get('/users', response_model=List[User], include_in_schema=False)
 @route.get('/users', response_model=List[User])

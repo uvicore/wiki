@@ -85,6 +85,12 @@ config = {
         'Logger': 'mreschke.wiki.overrides.logger.Logger',
         'Configuration': 'mreschke.wiki.overrides.configuration.Configuration',
         'Console': 'mreschke.wiki.overrides.console.cli',
+        'Http': 'mreschke.wiki.overrides.server.Server',
+        'WebRouter': 'mreschke.wiki.overrides.web_router.WebRouter',
+        'ApiRouter': 'mreschke.wiki.overrides.api_router.ApiRouter',
+        'Routes': 'mreschke.wiki.overrides.routes.Routes',
+        'StaticFiles': 'mreschke.wiki.overrides.static.StaticFiles',
+        'Templates': 'mreschke.wiki.overrides.templates.Templates',
     },
 
 
@@ -100,7 +106,7 @@ config = {
         'Application': {
             'object': 'mreschke.wiki.overrides.application.Application',
             'singleton': True,
-            'aliases': ['App']
+            'aliases': ['App', 'app']
         },
         'Package': {
             #'object': 'uvicore.foundation.package._Package',
