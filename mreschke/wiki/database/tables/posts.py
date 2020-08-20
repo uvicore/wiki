@@ -3,6 +3,8 @@ from uvicore import db
 from uvicore.database.table import Table, autocolumns
 from uvicore.support.dumper import dump, dd
 
+
+dd('hi')
 class Posts(Table):
 
     tablename = 'posts'
