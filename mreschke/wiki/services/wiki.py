@@ -1,6 +1,6 @@
 import uvicore
 from uvicore import log
-from uvicore.support.provider import ServiceProvider
+from uvicore.package import ServiceProvider
 from uvicore.support.dumper import dump, dd
 
 
@@ -27,6 +27,9 @@ class Wiki(ServiceProvider):
 
             # Foundation exists, so this is a deep merge override
             {'key': 'uvicore.foundation', 'module': 'mreschke.wiki.config.uvicore.foundation.config'},
+
+            # Auth exists, so this is a deep merge override
+            {'key': 'uvicore.auth', 'module': 'mreschke.wiki.config.uvicore.auth.config'},
         ])
 
         # # Test override logging binding
@@ -113,7 +116,7 @@ class Wiki(ServiceProvider):
         """Define Web and API router
         """
         self.web_routes('mreschke.wiki.http.routes.web.Web')
-        self.api_routes('mreschke.wiki.http.routes.api.API')
+        self.api_routes('mreschke.wiki.http.routes.api.Api')
 
         # Debug
         # if app.is_http:

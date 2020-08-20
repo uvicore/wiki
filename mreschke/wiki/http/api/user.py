@@ -10,16 +10,17 @@ route = ApiRouter()
 async def users():
     #return {'endpoint': 'users'}
     # Fake user as DB is not working yet
-    return [
-        {
-            "id": 1,
-            "name": "Matthew"
-        },
-        {
-            "id": 2,
-            "name": "Taylor"
-        },
-    ]
+    return User.all()
+    # return [
+    #     {
+    #         "id": 1,
+    #         "name": "Matthew"
+    #     },
+    #     {
+    #         "id": 2,
+    #         "name": "Taylor"
+    #     },
+    # ]
     #rows = await User.all()
     #return rows
 

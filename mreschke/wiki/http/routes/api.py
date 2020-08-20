@@ -3,7 +3,7 @@ from uvicore.support.dumper import dump, dd
 from uvicore import app, config
 
 
-class API(Routes[ApiRouter]):
+class Api(Routes[ApiRouter]):
 
     endpoints: str = 'mreschke.wiki.http.api'
 

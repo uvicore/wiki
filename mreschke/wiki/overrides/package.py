@@ -1,4 +1,5 @@
-from uvicore.foundation.package import _Package
+#from uvicore.foundation.package import _Package
+from uvicore.package.package import _Package
 
 
 class Package(_Package):

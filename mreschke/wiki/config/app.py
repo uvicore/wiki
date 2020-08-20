@@ -82,15 +82,15 @@ config = {
     # array above to define your own complete service provider.  Often times
     # simply overriding the bound class is good enough.
     'bindings': {
-        'Logger': 'mreschke.wiki.overrides.logger.Logger',
-        'Configuration': 'mreschke.wiki.overrides.configuration.Configuration',
-        'Console': 'mreschke.wiki.overrides.console.cli',
-        'Http': 'mreschke.wiki.overrides.server.Server',
-        'WebRouter': 'mreschke.wiki.overrides.web_router.WebRouter',
-        'ApiRouter': 'mreschke.wiki.overrides.api_router.ApiRouter',
-        'Routes': 'mreschke.wiki.overrides.routes.Routes',
-        'StaticFiles': 'mreschke.wiki.overrides.static.StaticFiles',
-        'Templates': 'mreschke.wiki.overrides.templates.Templates',
+        # 'Logger': 'mreschke.wiki.overrides.logger.Logger',
+        # 'Configuration': 'mreschke.wiki.overrides.configuration.Configuration',
+        # 'Console': 'mreschke.wiki.overrides.console.cli',
+        # 'Http': 'mreschke.wiki.overrides.server.Server',
+        # 'WebRouter': 'mreschke.wiki.overrides.web_router.WebRouter',
+        # 'ApiRouter': 'mreschke.wiki.overrides.api_router.ApiRouter',
+        # 'Routes': 'mreschke.wiki.overrides.routes.Routes',
+        # 'StaticFiles': 'mreschke.wiki.overrides.static.StaticFiles',
+        # 'Templates': 'mreschke.wiki.overrides.templates.Templates',
     },
 
 
@@ -103,16 +103,19 @@ config = {
     # other non service provider based classes.  If the array is empty the
     # defaults in `uvicore/container/ioc.py` are used.
     'ioc': {
-        'Application': {
-            'object': 'mreschke.wiki.overrides.application.Application',
-            'singleton': True,
-            'aliases': ['App', 'app']
-        },
-        'Package': {
-            #'object': 'uvicore.foundation.package._Package',
-            'object': 'mreschke.wiki.overrides.package.Package',
-            'aliases': ['package']
-        },
+        # 'Application': {
+        #     'object': 'mreschke.wiki.overrides.application.Application',
+        #     'singleton': True,
+        #     'aliases': ['App', 'app', 'application']
+        # },
+        # 'ServiceProvider': {
+        #     'object': 'mreschke.wiki.overrides.provider.ServiceProvider',
+        #     'aliases': ['service', 'provider'],
+        # },
+        # 'Package': {
+        #     'object': 'mreschke.wiki.overrides.package.Package',
+        #     'aliases': ['package']
+        # },
     },
 
 

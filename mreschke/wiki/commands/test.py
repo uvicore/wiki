@@ -15,6 +15,12 @@ cli = typer.Typer()
 
 @cli.command()
 def test():
+    db_play()
+    #encode_play()
+    dd('Done Playing!')
+
+
+
     """Wiki Test command"""
 
     uvicore.config.merge('mreschke.wiki.database', {'test': 'hi'})
@@ -115,3 +121,162 @@ def test():
     # print(config.get())
 
     # print(id(config))
+
+
+
+def db_play():
+
+    from uvicore import db
+    from mreschke.wiki.models.user import User
+
+    # dump(db.default)
+    # dump(db.connections)
+    # dump(db.engines)
+
+    # True Raw, matching SQLA Core
+    # engine = db.engine('wiki')
+    # con = engine.connect()
+    # table = User.__table__
+    # query = table.select()
+    # users = con.execute(query)
+    # for user in users:
+    #    dump(user)
+    #    dump(user['name'])
+    #    dump(user.name)
+    # dd(users)
+
+
+    # Not so raw, no engine, no connection, using User entity
+    # query = User.__table__.select()
+    # users = db.execute(User, query)
+    # for user in users:
+    #     dump(user)
+    #     dump(user['name'])
+    #     dump(user.name)
+    # dd(users)
+
+    # Model usage
+    #dd(db.metadata.get('wiki').tables)
+    #dd(User.__fields__['id'].field_info.extra['sortable'])
+    #dd(User.info(True))
+    users = User.all()
+    #for user in users:
+        #dd(user.hi())
+        #dd(user)
+        #dd(user.__class__.__dict__)
+    dd(users)
+
+    users = User.where('id', '1').get()
+    # for user in users:
+    #     dd(user.hi())
+    dd(users)
+
+    # user = User.find(1)
+    # dd(user)
+
+
+
+
+
+    # table = User.Db.table
+    # query = table.select()
+    # users = db.fetchall(User, query)
+    # for user in users:
+    #     dump(user)
+    #     dump(user['name'])
+    #     dump(user.name)
+
+    # dump('--------------')
+    # query = table.select().where(table.c.id == 1)
+    # user = db.fetchone(User, query)
+    # dump(user)
+    # dump(user.name)
+
+
+    # #dd(User.all())
+
+    # #x = db().table('users').get()
+    # users = db().table('users').get()
+    # for user in users:
+    #     dd(user['name'])
+    # dd(x)
+    # dd(x._connection, x._table, x._where)
+
+
+    # dump(uvicore.ioc.make('db')())
+    # dump(uvicore.ioc.make('db')())
+    # dump(db())
+    # dump(db())
+    # dump(db())
+    #x = db.connection('wiki').table('users').get()
+    #dump(x)
+
+    dd('x')
+
+
+    # DB::connection('foo')->select(...)
+    # $users = DB::select('select * from users where active = ?', [1]);
+    # DB::select('select * from users where id = :id', ['id' => 1]);
+
+    # DB::transaction(function () {
+    #     DB::table('users')->update(['votes' => 1]);
+
+    #     DB::table('posts')->delete();
+    # });
+
+    # $users = DB::table('users')->get();
+    # DB::table('users')->where('name', 'John')->first();
+    # DB::table('users')->where('name', 'John')->value('email');
+    # DB::table('users')->find(3);
+    # DB::table('roles')->pluck('title', 'name');
+    # DB::table('users')->count();
+    # DB::table('orders')->max('price');
+    #$users = DB::table('users')->select('name', 'email as user_email')->get();
+    #$users = DB::table('users')->distinct()->get();
+    #$users = $query->addSelect('age')->get();
+
+    # $users = DB::table('users')
+    #     ->join('contacts', 'users.id', '=', 'contacts.user_id')
+    #     ->join('orders', 'users.id', '=', 'orders.user_id')
+    #     ->select('users.*', 'contacts.phone', 'orders.price')
+    #     ->get();
+
+    dd('hi')
+
+
+def encode_play():
+
+    # None of this works because all encode uses await, and you cannot call
+    # any await method unless every def is async def
+    # So we do have to split our database query build + ORM into both sync
+    # and async
+
+    from uvicore import db
+    import sqlalchemy as sa
+    from databases import Database
+
+    connection = 'wiki'
+
+    database = Database('mysql://root:techie@127.0.0.1:3306/uvicore_wiki')
+    database.connect()
+
+    table = sa.Table(
+        "users",
+        db.metadata.get(connection),
+        sa.Column("id", sa.Integer, primary_key=True),
+        sa.Column("name", sa.String(length=50))
+    )
+
+    #engine = db.engine('wiki')
+    #con = db.connect()
+    query = table.select()
+    users = database.fetch_all(query)
+    # for user in users:
+
+
+    # table = User.Db.table
+    # query = table.select()
+    # users = con.execute(query)
+
+
+    dd('DONE encode_play()')
