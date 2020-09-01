@@ -12,7 +12,7 @@ class Api(Routes[ApiRouter]):
         # self.app, self.package, self.Router, self.prefix
 
         # If you defined a self.endpoints you can use string based module lookup
-        self.include('user', tags=['Users'])
+        self.include('post', tags=['Posts'])
 
         # Or just import the module and pass in the route directly
         #from mreschke.wiki.http.endpoints import user

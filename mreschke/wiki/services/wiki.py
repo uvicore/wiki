@@ -26,7 +26,7 @@ class Wiki(ServiceProvider):
             #{'key': self.name, 'module': 'mreschke.wiki.config.database.config'},
 
             # Foundation exists, so this is a deep merge override
-            {'key': 'uvicore.foundation', 'module': 'mreschke.wiki.config.uvicore.foundation.config'},
+            #{'key': 'uvicore.foundation', 'module': 'mreschke.wiki.config.uvicore.foundation.config'},
 
             # Auth exists, so this is a deep merge override
             {'key': 'uvicore.auth', 'module': 'mreschke.wiki.config.uvicore.auth.config'},
@@ -52,7 +52,20 @@ class Wiki(ServiceProvider):
         This is where you load views, assets, routes, commands...
         """
 
-        #log('wiki provider.boot()')
+        # Define all tables/models used by this package
+        # The goal is to load up all SQLAlchemy tables for complete metedata definitions.
+        # If you separate tables vs models use self.tables(['myapp.database.tables.*])
+        # If you use models only, or models with inline tables then use self.models(['myapp.models.*])
+        # Order does not matter as they are sorted topologically for ForeignKey dependencies
+        self.tables([
+            'mreschke.wiki.database.tables.*',
+            #'uvicore.auth.database.tables.*',
+        ])
+
+        # Define data seeders used by this package
+        self.seeders([
+            'mreschke.wiki.database.seeders.seeders.seed',
+        ])
 
         # Define view and asset paths and configure the templating system
         self.load_views()
@@ -129,10 +142,11 @@ class Wiki(ServiceProvider):
     def load_commands(self) -> None:
         """Define CLI commands to be added to the ./uvicore command line interface
         """
+        group = 'wiki'
         self.commands([
             {
                 'group': {
-                    'name': 'wiki',
+                    'name': group,
                     'parent': 'root',
                     'help': 'Wiki Commands',
                 },
@@ -140,17 +154,17 @@ class Wiki(ServiceProvider):
                     {'name': 'test', 'module': 'mreschke.wiki.commands.test.cli'},
                 ],
             },
-            {
-                'group': {
-                    'name': 'db',
-                    'parent': 'wiki',
-                    'help': 'Wiki DB Commands',
-                },
-                'commands': [
-                    {'name': 'create', 'module': 'mreschke.wiki.commands.db.create'},
-                    {'name': 'drop', 'module': 'mreschke.wiki.commands.db.drop'},
-                    {'name': 'recreate', 'module': 'mreschke.wiki.commands.db.recreate'},
-                    {'name': 'seed', 'module': 'mreschke.wiki.commands.db.seed'},
-                ],
-            }
+            # {
+            #     'group': {
+            #         'name': 'db',
+            #         'parent': group,
+            #         'help': 'Wiki DB Commands',
+            #     },
+            #     'commands': [
+            #         {'name': 'create', 'module': 'mreschke.wiki.commands.db.create'},
+            #         {'name': 'drop', 'module': 'mreschke.wiki.commands.db.drop'},
+            #         {'name': 'recreate', 'module': 'mreschke.wiki.commands.db.recreate'},
+            #         {'name': 'seed', 'module': 'mreschke.wiki.commands.db.seed'},
+            #     ],
+            # }
         ])

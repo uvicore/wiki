@@ -54,18 +54,18 @@ config = {
                 'username': 'root',
                 'password': 'techie',
                 'prefix': None,
+                #'include_connections': ['auth']
             },
-            'some-sql': {
-                'driver': 'mysql',
-                'dialect': 'pymysql',
-                'host': '127.0.0.1',
-                'port': 3306,
-                'database': 'somesql',
-                'username': 'root',
-                'password': 'techie',
-                'prefix': None,
-            },
-
+            # 'some-sql': {
+            #     'driver': 'mysql',
+            #     'dialect': 'pymysql',
+            #     'host': '127.0.0.1',
+            #     'port': 3306,
+            #     'database': 'somesql',
+            #     'username': 'root',
+            #     'password': 'techie',
+            #     'prefix': None,
+            # },
         },
     },
 

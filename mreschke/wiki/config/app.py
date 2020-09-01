@@ -52,8 +52,6 @@ config = {
         'mreschke.wiki': {
             'provider': 'mreschke.wiki.services.wiki.Wiki',
         },
-
-
         # Overrides to service providers used must come after all packages.
 
         # EXAMPLE.  You can override any service provider by simply providing

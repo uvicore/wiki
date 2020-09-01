@@ -9,6 +9,7 @@ python = "^3.8"
 uvicore = {path = "../uvicore"}
 aiomysql = "^0.0.20"
 faker = "^4.1.2"
+asgiref = "^3.2.10"
 
 [tool.poetry.dev-dependencies]
 

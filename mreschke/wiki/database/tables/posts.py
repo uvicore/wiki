@@ -1,21 +1,30 @@
 import sqlalchemy as sa
-from uvicore import db
-from uvicore.database.table import Table, autocolumns
+from uvicore.database.table import Schema
 from uvicore.support.dumper import dump, dd
 
 
-dd('hi')
-class Posts(Table):
+class Table(metaclass=Schema):
 
-    tablename = 'posts'
+    # Actual database table name
+    # Plural table names and singluar model names are encouraged
+    # Do not add a package prefix, leave that to the connection config
+    name = 'posts'
+
+    # Connection for this database from your config file
     connection = 'wiki'
-    metadata = db.metadata.get(connection)
 
-    schema = sa.Table(tablename, metedata,
-        sa.Column("id", sa.Integer, primary_key=True),
-        sa.Column("slug", sa.String(length=100), unique=True),
-        sa.Column("title", sa.String(length=100)),
-    )
+    # SQLAlchemy Table definition as a list (exclude name and metadata)
+    # This will be converted into an actual SQLAlchemy Table() instance
+    # See https://docs.sqlalchemy.org/en/13/core/schema.html
+    schema = [
+        sa.Column('id', sa.Integer, primary_key=True),
+        sa.Column('unique_slug', sa.String(length=100), unique=True),
+        sa.Column('title', sa.String(length=100)),
+        sa.Column('creator_id', sa.Integer, sa.ForeignKey('auth_users.id'), nullable=False)
+    ]
+
+    # Optional SQLAlchemy Table() instance kwargs
+    schema_kwargs = {}
 
 
 

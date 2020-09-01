@@ -1,5 +1,6 @@
 import typer
 import uvicore
+from typing import List
 #from uvicore import app, config
 #from uvicore.db import SessionLocal, engine, Model
 #from .. import models
@@ -127,7 +128,8 @@ def test():
 def db_play():
 
     from uvicore import db
-    from mreschke.wiki.models.user import User
+    from mreschke.wiki.models.post import Post
+    from uvicore.auth.models.user import User
 
     # dump(db.default)
     # dump(db.connections)
@@ -159,12 +161,40 @@ def db_play():
     #dd(db.metadata.get('wiki').tables)
     #dd(User.__fields__['id'].field_info.extra['sortable'])
     #dd(User.info(True))
-    users = User.all()
-    #for user in users:
-        #dd(user.hi())
-        #dd(user)
-        #dd(user.__class__.__dict__)
-    dd(users)
+
+    #dd(Post.find(1))
+
+    #x: Post = Post.find(1)
+    #dd(x)
+
+    from asgiref.sync import async_to_sync
+    from time import sleep
+
+    #engine = db.engine('wiki')
+    #async_to_sync(engine.connect)()
+    #engine.connect()
+
+    #posts: List[Post] = Post.all()
+
+    posts: List[Post] = async_to_sync(Post.all)()
+    dump(async_to_sync.__dict__)
+    dump(posts, 'x')
+    sleep(1)
+    posts2: List[Post] = async_to_sync(Post.all)()
+
+    #posts = Post.include('creator').get()
+    #for post in posts:
+        #dd(post.creator)
+    dump(posts, 'x')
+
+    #users: List[User] = User.get()
+    #users = User.where('id', 1).get()
+
+    dump(users)
+
+    exit()
+
+
 
     users = User.where('id', '1').get()
     # for user in users:

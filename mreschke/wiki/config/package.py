@@ -26,9 +26,21 @@ config = {
     # in all override battles.
     # Overrides include: providers, configs, views, templates, assets
     'services': OrderedDict({
-        # Uvicore Framework Service Providers
+        # Wiki uses database, orm, auth, http
         'uvicore.foundation': {
             'provider': 'uvicore.foundation.services.Foundation',
+        },
+        'uvicore.database': {
+            'provider': 'uvicore.database.services.Database',
+        },
+        'uvicore.orm': {
+            'provider': 'uvicore.orm.services.Orm',
+        },
+        'uvicore.auth': {
+            'provider': 'uvicore.auth.services.Auth',
+        },
+        'uvicore.http': {
+            'provider': 'uvicore.http.services.Http',
         },
     }),
 
