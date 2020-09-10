@@ -1,6 +1,8 @@
-import typer
+#import typer
 import uvicore
 from typing import List
+from uvicore.console import command
+
 #from uvicore import app, config
 #from uvicore.db import SessionLocal, engine, Model
 #from .. import models
@@ -11,61 +13,70 @@ from uvicore.support.dumper import dump, dd
 #from mreschke.wiki import db
 
 # Commands
-cli = typer.Typer()
+#cli = typer.Typer()
+
+@command()
+async def cli():
+    """Play"""
 
 
-@cli.command()
-def test():
-    db_play()
+    from uvicore.support import module
+    x = module.location('uvicore.auth.database')
+    #x = module.location('uvicore.foundation.config.package.config')
+
+    dd(x)
+
+
+    await db_play()
     #encode_play()
-    dd('Done Playing!')
+    # dd('Done Playing!')
 
 
 
-    """Wiki Test command"""
+    # """Wiki Test command"""
 
-    uvicore.config.merge('mreschke.wiki.database', {'test': 'hi'})
-    dd(uvicore.config('mreschke.wiki'))
-
-
-
-    # Manuall get app singleton
-    from uvicore.contracts import Application
-    app: Application = uvicore.ioc.make('app')
-    dump(app.config('app.name'))
-
-    dump('x')
-
-    # Can manually get config too
-    config = uvicore.ioc.make('config')
-    dump(config('app.name'))
-
-    # Log example
-    uvicore.log.header('hi')
-
-    # Pull log from IoC
-    log = uvicore.ioc.make('Logger')
-
-    log.header('there')
-    #dd(uvicore.ioc.bindings)
+    # uvicore.config.merge('mreschke.wiki.database', {'test': 'hi'})
+    # dd(uvicore.config('mreschke.wiki'))
 
 
-    # module = 'uvicore'
-    # parts = module.split('.')
-    # path = '.'.join(parts[0:-1])
-    # name = ''.join(parts[-1:])
 
-    # if path == '': path = module
-    # imported = import_module(path)
-    # dd(getattr(imported, name))
+    # # Manuall get app singleton
+    # from uvicore.contracts import Application
+    # app: Application = uvicore.ioc.make('app')
+    # dump(app.config('app.name'))
 
-    wiki = app.package('mreschke.wiki')
-    dump(wiki.config())
+    # dump('x')
+
+    # # Can manually get config too
+    # config = uvicore.ioc.make('config')
+    # dump(config('app.name'))
+
+    # # Log example
+    # uvicore.log.header('hi')
+
+    # # Pull log from IoC
+    # log = uvicore.ioc.make('Logger')
+
+    # log.header('there')
+    # #dd(uvicore.ioc.bindings)
 
 
-    log('hi')
+    # # module = 'uvicore'
+    # # parts = module.split('.')
+    # # path = '.'.join(parts[0:-1])
+    # # name = ''.join(parts[-1:])
 
-    dd('test done')
+    # # if path == '': path = module
+    # # imported = import_module(path)
+    # # dd(getattr(imported, name))
+
+    # wiki = app.package('mreschke.wiki')
+    # dump(wiki.config())
+
+
+    # log('hi')
+
+    # dd('test done')
 
 
 
@@ -125,7 +136,7 @@ def test():
 
 
 
-def db_play():
+async def db_play():
 
     from uvicore import db
     from mreschke.wiki.models.post import Post
@@ -174,32 +185,28 @@ def db_play():
     #async_to_sync(engine.connect)()
     #engine.connect()
 
-    #posts: List[Post] = Post.all()
+    #dd(Post.info())
 
-    posts: List[Post] = async_to_sync(Post.all)()
-    dump(async_to_sync.__dict__)
-    dump(posts, 'x')
-    sleep(1)
-    posts2: List[Post] = async_to_sync(Post.all)()
+    posts: List[Post] = await Post.all()
 
     #posts = Post.include('creator').get()
     #for post in posts:
         #dd(post.creator)
-    dump(posts, 'x')
+    dump(posts)
 
     #users: List[User] = User.get()
     #users = User.where('id', 1).get()
 
-    dump(users)
+    #dump(users)
 
-    exit()
+    #exit()
 
 
 
-    users = User.where('id', '1').get()
+    #users = User.where('id', '1').get()
     # for user in users:
     #     dd(user.hi())
-    dd(users)
+    #dd(users)
 
     # user = User.find(1)
     # dd(user)
@@ -241,7 +248,7 @@ def db_play():
     #x = db.connection('wiki').table('users').get()
     #dump(x)
 
-    dd('x')
+    #dd('x')
 
 
     # DB::connection('foo')->select(...)
@@ -271,7 +278,7 @@ def db_play():
     #     ->select('users.*', 'contacts.phone', 'orders.price')
     #     ->get();
 
-    dd('hi')
+    #dd('hi')
 
 
 def encode_play():

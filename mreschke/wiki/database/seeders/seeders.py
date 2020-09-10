@@ -1,5 +1,5 @@
 from . import posts
 
-def seed():
+async def seed():
     # Order is critical for ForeignKey dependencies
-    posts.seed()
+    await posts.seed()

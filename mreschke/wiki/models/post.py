@@ -1,22 +1,24 @@
 from typing import Optional
-from uvicore.orm.model import Model
-from uvicore.orm.fields import Field
 from mreschke.wiki.database.tables import posts
+from uvicore.auth.models.user import User
+from uvicore.orm.fields import Field
+from uvicore.orm.metaclass import ModelMetaclass
+from uvicore.orm.model import Model
 from uvicore.support.dumper import dd, dump
 
-from uvicore.auth.models.user import User
 
-
-class Post(Model):
+class Post(Model, metaclass=ModelMetaclass):
     """Wiki Posts"""
 
     # Database table definition
     __tableclass__ = posts.Table
 
     id: Optional[int] = Field('id',
+        primary=True,
         description='Post ID',
         sortable=True,
         searchable=True,
+        read_only=True,
     )
 
     slug: str = Field('unique_slug',
