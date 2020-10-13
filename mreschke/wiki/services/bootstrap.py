@@ -3,7 +3,77 @@ from uvicore.configuration import Env
 from uvicore.support import path
 from uvicore.support.dumper import dd, dump
 
+
 def application(is_console: bool = False) -> None:
+    """Bootstrap the application either from the CLI or Web entry points
+
+    Bootstrap only runs when this package is running as the main app via
+    ./uvicore or uvicorn/gunicorn server"""
+
+    # Base path
+    base_path = path.find_base(__file__)
+
+    # Load .env from environs
+    Env().read_env(base_path + '/.env')
+
+    # Import this apps config (import must be after Env())
+    from ..config.app import config as app_config
+
+    # Bootstrap the Uvicore Application (Either CLI or HTTP entry points based on is_console)
+    uvicore.bootstrap(app_config, base_path, is_console)
+
+    # Return application
+    return uvicore.app
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def application_OLD_PLAY(is_console: bool = False) -> None:
     """Bootstrap the application either from the CLI or Web entry points
 
     Bootstrap only runs when this package is running as the main app via
@@ -20,7 +90,8 @@ def application(is_console: bool = False) -> None:
     from ..config.app import config as app_config
 
     # Bind bootstrap level IoC overrides
-    uvicore.ioc.bind_map(app_config['ioc'])
+    #uvicore.ioc.config(app_config)
+    #uvicore.ioc.bind_map(app_config['ioc'])
 
     # Example of manual bootstrap level custom IoC bindings
     #from uvicore.foundation.application import Application
@@ -44,17 +115,23 @@ def application(is_console: bool = False) -> None:
     # )
 
 
-
-    # Instantiate the Application into the uvicore.app instance
-    uvicore.app = uvicore.ioc.make('Application')
-    #dd(uvicore.app)
+    # Import the main Appilcation (an IoC singleton) and set uvicore.app instance
+    #uvicore.app = uvicore.ioc.make('Application')
+    #uvicore.init()
+    #from uvicore.foundation.application import Application
+    #uvicore.app = Application
 
     # Instantiate the Event system into the uvicore.events instance
-    uvicore.events = uvicore.ioc.make('Dispatcher')
+    #uvicore.events = uvicore.ioc.make('Dispatcher')
+    #from uvicore.events.dispatcher import Dispatcher
+    #uvicore.events = Dispatcher
+
 
     # Bootstrap the Uvicore Application (Either CLI or HTTP entry points based on is_console)
-    uvicore.app.bootstrap(app_config, base_path, is_console)
+    #uvicore.app.bootstrap(app_config, base_path, is_console)
+    uvicore.bootstrap(app_config, base_path, is_console)
 
+    #dump(uvicore.db.connection('wiki'))
 
     # If you wanted to get the instance of the app without import
     # just make it from its IoC singleton

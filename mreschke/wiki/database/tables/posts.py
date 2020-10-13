@@ -1,9 +1,13 @@
+import uvicore
 import sqlalchemy as sa
 from uvicore.database.table import Schema
 from uvicore.support.dumper import dump, dd
 
+# Get related tablenames with proper prefixes
+users = uvicore.db.tablename('auth.users')
 
-class Table(metaclass=Schema):
+
+class _Posts(Schema):
 
     # Actual database table name
     # Plural table names and singluar model names are encouraged
@@ -20,14 +24,15 @@ class Table(metaclass=Schema):
         sa.Column('id', sa.Integer, primary_key=True),
         sa.Column('unique_slug', sa.String(length=100), unique=True),
         sa.Column('title', sa.String(length=100)),
-        sa.Column('creator_id', sa.Integer, sa.ForeignKey('auth_users.id'), nullable=False)
+        sa.Column('creator_id', sa.Integer, sa.ForeignKey(f"{users}.id"), nullable=False),
     ]
 
     # Optional SQLAlchemy Table() instance kwargs
     schema_kwargs = {}
 
 
-
+# IoC Class Instance
+Posts: _Posts = uvicore.ioc.make('mreschke.wiki.database.tables.posts.Posts', _Posts, singleton=True)
 
 
 

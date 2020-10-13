@@ -1,17 +1,20 @@
+from __future__ import annotations
+
 from typing import Optional
-from mreschke.wiki.database.tables import posts
+
+import uvicore
+from mreschke.wiki.database.tables import posts as table
 from uvicore.auth.models.user import User
-from uvicore.orm.fields import Field
-from uvicore.orm.metaclass import ModelMetaclass
-from uvicore.orm.model import Model
+from uvicore.orm.fields import BelongsTo, Field
+from uvicore.orm.model import Model, ModelMetaclass
 from uvicore.support.dumper import dd, dump
 
 
-class Post(Model, metaclass=ModelMetaclass):
+class PostModel(Model['PostModel'], metaclass=ModelMetaclass):
     """Wiki Posts"""
 
     # Database table definition
-    __tableclass__ = posts.Table
+    __tableclass__ = table.Posts
 
     id: Optional[int] = Field('id',
         primary=True,
@@ -50,7 +53,8 @@ class Post(Model, metaclass=ModelMetaclass):
         # ForeignKey or many-to-one
         # Default assumes foreign is 'id' and local is field + _id
         #has_one=(User),
-        has_one=(User, 'id', 'creator_id'),
+        #has_one=(User, 'id', 'creator_id'),
+        relation=BelongsTo('uvicore.auth.models.user.User'),
     )
 
     # comments: List[Comment] = Field(None,
@@ -85,3 +89,7 @@ class Post(Model, metaclass=ModelMetaclass):
 #x = Post(id=1, slug='asdf', title='asdf')
 #dd(x)
 #dd(Post.__dict__)
+
+
+# IoC Class Instance
+Post: PostModel = uvicore.ioc.make('mreschke.wiki.models.post.Post', PostModel)

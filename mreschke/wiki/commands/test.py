@@ -17,19 +17,27 @@ from uvicore.support.dumper import dump, dd
 
 @command()
 async def cli():
-    """Play"""
+    """Play asdfasdfasdfasdf"""
+
+    from mreschke.wiki.models.post import Post
+
+    posts = (await Post.query()
+        .include('creator.info')
+        .get()
+    )
+    dump(posts)
 
 
-    from uvicore.support import module
-    x = module.location('uvicore.auth.database')
-    #x = module.location('uvicore.foundation.config.package.config')
+    # from uvicore.support import module
+    # x = module.location('uvicore.auth.database')
+    # #x = module.location('uvicore.foundation.config.package.config')
 
-    dd(x)
+    # dd(x)
 
 
-    await db_play()
-    #encode_play()
-    # dd('Done Playing!')
+    # await db_play()
+    # #encode_play()
+    # # dd('Done Playing!')
 
 
 

@@ -12,8 +12,7 @@ class Wiki(ServiceProvider):
         you define your packages configs and IoC bindings.  Configs are deep merged only after
         all packages are registered.  No real work should be performed here as it
         is very early in the bootstraping process and most internal processes are not
-        instantiated yet.
-        """
+        instantiated yet."""
 
         #log('wiki provider.register()')
 
@@ -49,8 +48,7 @@ class Wiki(ServiceProvider):
         """Bootstrap package into uvicore framework.
         Boot takes place after all packages are registered.  This means all package
         configs are deep merged to provide a complete and accurate view of all configs.
-        This is where you load views, assets, routes, commands...
-        """
+        This is where you load views, assets, routes, commands..."""
 
         # Define all tables/models used by this package
         # The goal is to load up all SQLAlchemy tables for complete metedata definitions.
@@ -64,6 +62,7 @@ class Wiki(ServiceProvider):
 
         # Define data seeders used by this package
         self.seeders([
+            'uvicore.auth.database.seeders.seeders.seed',
             'mreschke.wiki.database.seeders.seeders.seed',
         ])
 
@@ -77,8 +76,8 @@ class Wiki(ServiceProvider):
         self.load_commands()
 
     def load_views(self) -> None:
-        """Define view and asset paths and configure the templating system
-        """
+        """Define view and asset paths and configure the templating system"""
+
         # Add view paths
         self.views(['mreschke.wiki.http.views'])
 
@@ -126,8 +125,8 @@ class Wiki(ServiceProvider):
         #app.jinja.env.globals['whatever'] = somefunc
 
     def load_routes(self) -> None:
-        """Define Web and API router
-        """
+        """Define Web and API router"""
+
         self.web_routes('mreschke.wiki.http.routes.web.Web')
         self.api_routes('mreschke.wiki.http.routes.api.Api')
 
@@ -140,8 +139,8 @@ class Wiki(ServiceProvider):
         #     #app.dd('x')
 
     def load_commands(self) -> None:
-        """Define CLI commands to be added to the ./uvicore command line interface
-        """
+        """Define CLI commands to be added to the ./uvicore command line interface"""
+
         group = 'wiki'
         self.commands([
             {
