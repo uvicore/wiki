@@ -10,7 +10,8 @@ from uvicore.orm.model import Model, ModelMetaclass
 from uvicore.support.dumper import dd, dump
 
 
-class PostModel(Model['PostModel'], metaclass=ModelMetaclass):
+@uvicore.model()
+class Post(Model['PostModel'], metaclass=ModelMetaclass):
     """Wiki Posts"""
 
     # Database table definition
@@ -92,4 +93,6 @@ class PostModel(Model['PostModel'], metaclass=ModelMetaclass):
 
 
 # IoC Class Instance
-Post: PostModel = uvicore.ioc.make('mreschke.wiki.models.post.Post', PostModel)
+#Post: PostModel = uvicore.ioc.make('mreschke.wiki.models.post.Post', PostModel)
+
+#Post.update_forward_refs()

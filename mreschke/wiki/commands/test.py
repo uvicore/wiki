@@ -22,7 +22,7 @@ async def cli():
     from mreschke.wiki.models.post import Post
 
     posts = (await Post.query()
-        .include('creator.info')
+        .include('creator')
         .get()
     )
     dump(posts)

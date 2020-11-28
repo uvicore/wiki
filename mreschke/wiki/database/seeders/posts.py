@@ -3,6 +3,7 @@ from faker import Faker
 from mreschke.wiki.models.post import Post
 from uvicore.support.dumper import dump, dd
 
+@uvicore.seeder()
 async def seed():
     log.item('Seeding table posts')
     posts = []

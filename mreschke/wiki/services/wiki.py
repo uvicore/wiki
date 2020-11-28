@@ -4,6 +4,7 @@ from uvicore.package import ServiceProvider
 from uvicore.support.dumper import dump, dd
 
 
+@uvicore.provider()
 class Wiki(ServiceProvider):
 
     def register(self) -> None:

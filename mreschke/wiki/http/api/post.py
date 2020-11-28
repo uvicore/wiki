@@ -10,7 +10,7 @@ route = ApiRouter()
 async def posts():
     #return {'endpoint': 'users'}
     # Fake user as DB is not working yet
-    return await Post.get()
+    return await Post.query().get()
     # return [
     #     {
     #         "id": 1,
@@ -27,7 +27,7 @@ async def posts():
 
 @route.get('/post/{id}', response_model=Post)
 async def post(id: int):
-    return await Post.find(id)
+    return await Post.query().find(id)
     # Fake user as DB is not working yet
     # return {
     #     "id":1,

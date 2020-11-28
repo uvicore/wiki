@@ -7,7 +7,8 @@ from uvicore.support.dumper import dump, dd
 users = uvicore.db.tablename('auth.users')
 
 
-class _Posts(Schema):
+@uvicore.table()
+class Posts(Schema):
 
     # Actual database table name
     # Plural table names and singluar model names are encouraged
@@ -32,7 +33,7 @@ class _Posts(Schema):
 
 
 # IoC Class Instance
-Posts: _Posts = uvicore.ioc.make('mreschke.wiki.database.tables.posts.Posts', _Posts, singleton=True)
+#Posts: _Posts = uvicore.ioc.make('mreschke.wiki.database.tables.posts.Posts', _Posts, singleton=True)
 
 
 
