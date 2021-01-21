@@ -1,3 +1,4 @@
+import uvicore
 from uvicore import log
 from faker import Faker
 from mreschke.wiki.models.post import Post
@@ -13,7 +14,10 @@ async def seed():
         post = Post(
             slug=fake.slug(title),
             title=title,
+            body=fake.paragraph(np_sentences=5),
+            format_key='md',
             creator_id=1,
+            updator_id=1,
         )
         #post.save()
         posts.append(post)

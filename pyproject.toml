@@ -6,10 +6,10 @@ authors = ["Matthew Reschke <mail@mreschke.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-uvicore = {path = "../uvicore"}
 aiomysql = "^0.0.20"
 faker = "^4.1.2"
 asgiref = "^3.2.10"
+uvicore = {path = "../uvicore", develop = true}
 
 [tool.poetry.dev-dependencies]
 

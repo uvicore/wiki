@@ -1,7 +1,7 @@
 from typing import List
 
 from mreschke.wiki.models.post import Post
-from uvicore.http.routing import ApiRouter
+from uvicore.http import ApiRouter
 
 route = ApiRouter()
 

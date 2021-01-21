@@ -113,7 +113,6 @@ config = {
         # Application Service Providers
         'mreschke.wiki': {
             'provider': 'mreschke.wiki.services.wiki.Wiki',
-            #'config': 'mreschke.wiki.config.package2.config',
         },
         # Overrides to service providers used must come after all packages.
 

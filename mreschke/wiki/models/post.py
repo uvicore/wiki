@@ -1,17 +1,13 @@
 from __future__ import annotations
-
 from typing import Optional
-
 import uvicore
-from mreschke.wiki.database.tables import posts as table
-from uvicore.auth.models.user import User
-from uvicore.orm.fields import BelongsTo, Field
-from uvicore.orm.model import Model, ModelMetaclass
+from uvicore.orm import BelongsTo, Field, Model, ModelMetaclass
 from uvicore.support.dumper import dd, dump
+from mreschke.wiki.database.tables import posts as table
 
 
 @uvicore.model()
-class Post(Model['PostModel'], metaclass=ModelMetaclass):
+class Post(Model['Post'], metaclass=ModelMetaclass):
     """Wiki Posts"""
 
     # Database table definition
@@ -20,12 +16,10 @@ class Post(Model['PostModel'], metaclass=ModelMetaclass):
     id: Optional[int] = Field('id',
         primary=True,
         description='Post ID',
-        sortable=True,
-        searchable=True,
         read_only=True,
     )
 
-    slug: str = Field('unique_slug',
+    slug: str = Field('slug',
         description='URL Friendly Post Title Slug',
         required=True,
     )
@@ -35,64 +29,68 @@ class Post(Model['PostModel'], metaclass=ModelMetaclass):
         required=True,
     )
 
-    creator_id: int = Field('creator_id',
-        description="Post Creator UserID",
+    body: str = Field('body',
+        description='Post Body',
+    )
+
+    format_key: str = Field('format_key',
+        description='Post Format',
         required=True,
     )
 
-    # ForeignKey = many-to-one and inverse one-to-many
-    # many-to-one = many posts can have ONE creator_id
-    #   post.creator.id
-    # one-to-many = inverse, one user can have many posts
-    #   user.posts
-    #   in django users.post_set.all()
+    format: Optional[Format] = Field(None,
+        description='Post Format',
+        relation=BelongsTo('mreschke.wiki.models.format.Format', foreign_key='key', local_key='format_key'),
+    )
 
+    view_count: int = Field('view_count',
+        description='Total Post Views',
+    )
 
+    deleted: bool = Field('deleted',
+        description='Post is Deleted',
+        default=False,
+    )
+
+    hidden: bool = Field('hidden',
+        description='Post is Hidden',
+        default=False,
+    )
+
+    creator_id: int = Field('creator_id',
+        description='Post Creator UserID',
+        required=True,
+        read_only=True,
+    )
 
     creator: Optional[User] = Field(None,
         description="Post Creator User Model",
-        # ForeignKey or many-to-one
-        # Default assumes foreign is 'id' and local is field + _id
-        #has_one=(User),
-        #has_one=(User, 'id', 'creator_id'),
         relation=BelongsTo('uvicore.auth.models.user.User'),
     )
 
-    # comments: List[Comment] = Field(None,
-    #     # One-to-Many (inverse so ForeignKey is actually on Comments table post_id)
-    #     has_many=(Comment, 'post_id', 'id')
-    # )
+    updator_id: int = Field('updator_id',
+        description='Post Updator UserID',
+        required=True,
+    )
 
-    # # On comments table - inverse
-    # # posts: List[Post] = Field(None,
-    # #     belongs_to=(Post, 'id', 'post_id')
-    # # )
+    updator: Optional[User] = Field(None,
+        description="Post Creator User Model",
+        relation=BelongsTo('uvicore.auth.models.user.User'),
+    )
 
-    # tags: List[Tag] = Field(None,
-    #     # Many to many, requires a relation table like post_tags
-    #     belongs_to_many=(Tag, 'post_tags', 'post_id', 'tag_id')
-    # )
+    created_at: str = Field('created_at',
+        description='Post Created DateTime',
+    )
 
-    # # On tags table
-    # posts: List[Post] = Field(None,
-    #     belongs_to_many=(Post, 'post_tags', 'tag_id', 'post_id')
-    # )
+    updated_at: str = Field('updated_at',
+        description='Post Updated DateTime',
+    )
 
+    indexed_at: str = Field('indexed_at',
+        description='Post Last Indexed DateTime',
+    )
 
-    @property
-    def creatorx(self):
-        dd('hi')
-
-
-# class Post(PostX, Model[PostX]):
-#     pass
-
-#x = Post(id=1, slug='asdf', title='asdf')
-#dd(x)
-#dd(Post.__dict__)
-
-
-# IoC Class Instance
-#Post: PostModel = uvicore.ioc.make('mreschke.wiki.models.post.Post', PostModel)
-
-#Post.update_forward_refs()
+# Import relation models at the bottom and update forward refs
+from uvicore.auth.models import User
+from mreschke.wiki.models import Format
+Post.update_forward_refs()
