@@ -19,6 +19,208 @@ from uvicore.support.dumper import dump, dd
 async def cli():
     """Play asdfasdfasdfasdf"""
 
+
+    from uvicore.typing import Dict, OrderedDict, Optional
+
+
+    # from dataclasses import dataclass
+    # @dataclass
+    # class Config:
+    #     name: Optional[str] = None
+    #     registers: Optional[Dict] = None
+
+
+    # x = Config()
+    # x.name = 'matthew'
+    # x.registers = {
+    #     'models': True
+    # }
+    # x.asdf = 'hi'
+    # x.name = 1
+    # dump(x.asdf)
+    # dd(x)
+
+
+    dump(uvicore.config)
+    #dump(uvicore.config('mreschke.wiki.database'))
+
+    dd('DONE')
+
+    #dd(uvicore.config)
+
+    #dd(uvicore.app.packages.mreschke.wiki)
+    #dd(uvicore.app.package('mreschke.wiki').name)
+
+
+    a = Dict({
+        'name': 'Mreschke Wiki',
+        'registers': {
+            'modules': True,
+            'tables': True,
+        },
+        'database': {
+            'default': 'wiki',
+            'connections': {
+                'wiki': {
+                    'server': 'localhost',
+                    'port': 3308
+                }
+            }
+        }
+    })
+
+
+    b = {
+        'name': 'NEW name',
+        'database': {
+            'connections': {
+                'wiki': {
+                    'port': 99999
+                }
+            }
+        }
+    }
+
+    a.merge(b)
+
+
+    #a.dotset('database.connections.wiki.asdf.asdf.asdf', 1234)
+
+    #dump(a.dotget('database.connections.wiki.port'))
+
+    dump(a.dotget('database.connections.wiki.port'))
+
+
+    dd(a)
+    dd('done')
+    #dd(a)
+
+    # a.defaults(b)
+
+    # a.freeze()
+
+    # a.unfreeze()
+    # a.asdfasdfasdf = 'asdfasdf'
+
+    # dd(a)
+
+
+
+
+    #x = config('app.name')
+
+
+    x = config.app.name
+
+
+
+    config('app.name', 'newname')
+    config.app.name = 'newname'
+
+
+
+
+
+
+
+
+
+
+
+    x = Config(name='matthew', registers={'modules': True})
+    dd(x)
+
+
+
+    dump(config['name'])
+    dump(config.name)
+    if 'name' in config:
+        dump('name found')
+
+    if config.name:
+        dump('name found again')
+
+    if config.asdfasdfasdfasdfasdf:
+        dump('asdfasdfasdfasdfasdfasdfasdfasdf')
+
+    dump(config.database.connections.wiki)
+
+    if config.database.connections:
+        dump('connections found')
+
+
+
+    # Add something DEEP without defining parents
+    config.frameworks.laravel.color = ['red', 'blue']
+
+
+
+
+    dump(config)
+
+
+
+
+
+
+
+    dd('DONE PLAYING')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     from mreschke.wiki.models.post import Post
 
     posts = (await Post.query()

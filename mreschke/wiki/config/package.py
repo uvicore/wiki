@@ -1,4 +1,4 @@
-from uvicore.support.collection import Odic
+from uvicore.typing import OrderedDict
 
 # This is the main wiki config.  All items here can be overridden
 # when used inside other applications.  Accessible at config('mreschke.wiki')
@@ -89,7 +89,7 @@ config = {
     # requires them.  Services like uvicore.database, uvicore.orm, uvicore.http
     # uvicore.auth...
     # --------------------------------------------------------------------------
-    'dependencies': Odic({
+    'dependencies': OrderedDict({
         # Wiki uses database, orm, auth, http
         'uvicore.foundation': {
             'provider': 'uvicore.foundation.services.Foundation',

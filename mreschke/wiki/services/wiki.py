@@ -10,16 +10,16 @@ from uvicore.support.dumper import dump, dd
 class Wiki(ServiceProvider, Cli, Db, Http):
 
     def register(self) -> None:
-        """Register package into uvicore framework.
+        """Register package into the uvicore framework.
         All packages are registered before the framework boots.  This is where
-        you define your packages configs and IoC bindings.  Configs are deep merged only after
-        all packages are registered.  No real work should be performed here as it
-        is very early in the bootstraping process and most internal processes are not
-        instantiated yet."""
+        you define your packages configs, IoC bindings and early event listeners.
+        Configs are deep merged only after all packages are registered.  No real
+        work should be performed here as it is very early in the bootstraping
+        process and we have no clear view of the full configuration system."""
 
         # Register configs
         # If config key already exists items will be deep merged allowing
-        # you to override small peices of other package configs
+        # you to override granular aspects of other package configs
         self.configs([
             # Here self.name is your packages name (ie: mreschke.wiki).
             {'key': self.name, 'module': 'mreschke.wiki.config.package.config'},
@@ -33,18 +33,24 @@ class Wiki(ServiceProvider, Cli, Db, Http):
         ])
 
     def boot(self) -> None:
-        """Bootstrap package into uvicore framework.
-        Boot takes place after all packages are registered.  This means all package
-        configs are deep merged to provide a complete and accurate view of all configs.
-        This is where you load views, assets, routes, commands..."""
+        """Bootstrap package into the uvicore framework.
+        Boot takes place after ALL packages are registered.  This means all package
+        configs are deep merged to provide a complete and accurate view of all
+        configuration. This is where you register, connections, models,
+        views, assets, routes, commands...  If you need to perform work after ALL
+        packages have booted, use the event system and listen to the booted event:
+        self.events.listen('uvicore.foundation.events.app.Booted, self.booted')"""
 
         # Define Service Provider Registrations
-        self.registers(self.package.config('registers'))
+        self.registers(self.package.config.registers)
 
         # Define Database Connections
-        self.connections(self.package.config('database.connections'), self.package.config('database.default'))
+        self.connections(
+            config=self.package.config.database.connections,
+            default=self.package.config.database.default
+        )
 
-        # Define all tables/models
+        # Define all tables or models
         # The goal is to load up all SQLAlchemy tables for complete metedata definitions.
         # If you separate tables vs models use self.tables(['myapp.database.tables.*])
         # If you use models only, or models with inline tables then use self.models(['myapp.models.*])
@@ -73,31 +79,13 @@ class Wiki(ServiceProvider, Cli, Db, Http):
         # Define CLI commands to be added to the ./uvicore command line interface
         self.load_commands()
 
-
-        # from uvicore.http import provider as http
-        # http.views(['asdf'])
-        # http.web_routes(['asdf'])
-        # http.api_routes(['asdfa'])
-
-        # from uvicore.console import provider as console
-        # console.commands({
-        #     'root:wiki': {
-        #         'help': 'Wiki Commands',
-        #         'commands': {
-        #             'test': 'some file'
-        #         }
-        #     }
-        # })
-
-        # console.add_command('root:wiki', 'Wiki Commands', {'test': 'some file'})
-
     def load_views(self) -> None:
         """Define view and asset paths and configure the templating system"""
 
-        # Add view paths
+        # Define view paths
         self.views(['mreschke.wiki.http.views'])
 
-        # Add asset paths
+        # Define asset paths
         self.assets([
             'mreschke.wiki.http.static2',  #foundation example - BLUE
             'mreschke.wiki.http.static',     # wiki override example - RED
@@ -122,7 +110,7 @@ class Wiki(ServiceProvider, Cli, Db, Http):
                     return False
             return True
 
-        # Add custom template options
+        # Define custom template options
         self.template({
             'context_functions': {
                 'url2': url_method,
@@ -142,8 +130,8 @@ class Wiki(ServiceProvider, Cli, Db, Http):
 
     def load_routes(self) -> None:
         """Define Web and API prefix and routers"""
-        self.web_routes('mreschke.wiki.http.routes.web.Web', self.package.config('route.web_prefix'))
-        self.api_routes('mreschke.wiki.http.routes.api.Api', self.package.config('route.api_prefix'))
+        self.web_routes('mreschke.wiki.http.routes.web.Web', self.package.config.route.web_prefix)
+        self.api_routes('mreschke.wiki.http.routes.api.Api', self.package.config.route.api_prefix)
 
     def load_commands(self) -> None:
         """Define CLI commands to be added to the ./uvicore command line interface"""

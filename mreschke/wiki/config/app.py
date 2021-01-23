@@ -1,4 +1,4 @@
-from collections import OrderedDict
+from uvicore.typing import OrderedDict
 from uvicore.configuration import env
 
 # This config only applies if this package is running as the main application.
@@ -203,6 +203,16 @@ config = {
             'filters': [],
             'exclude': [],
         }
+    },
+
+
+    # --------------------------------------------------------------------------
+    # Pretty Printer Configuration
+    #
+    # Default width if not defined is 120
+    # --------------------------------------------------------------------------
+    'dump': {
+        'width': 120
     },
 
 

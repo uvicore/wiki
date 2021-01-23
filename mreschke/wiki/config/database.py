@@ -18,6 +18,7 @@ config = {
                 'username': 'root',
                 'password': 'techie',
                 'prefix': None,
+                'test': 'cocknballs'
                 #'include_connections': ['auth']
             },
             # 'some-sql': {

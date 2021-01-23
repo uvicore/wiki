@@ -1,8 +1,6 @@
 config = {
     'test': 'new override',
 
-    #'register_routes': True,
-
     'database': {
         'connections': {
             'foundation': {
