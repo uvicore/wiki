@@ -11,10 +11,11 @@ class Web(Routes[WebRouter]):
         # String style
         self.include('about')
 
+        self.include('home')
+
         # Import style
         #from mreschke.wiki.http.controllers import about
         #self.include(about.route)
-
 
 
 

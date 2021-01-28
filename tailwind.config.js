@@ -1,4 +1,4 @@
-base = './jdbill/marketing/http'
+base = './mreschke/wiki/http'
 assets = `${base}/assets`
 views = `${base}/views`
 

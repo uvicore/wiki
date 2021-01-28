@@ -50,6 +50,8 @@ class Wiki(ServiceProvider, Cli, Db, Http):
             default=self.package.config.database.default
         )
 
+        self.package.database.connections[0].dia
+
         # Define all tables or models
         # The goal is to load up all SQLAlchemy tables for complete metedata definitions.
         # If you separate tables vs models use self.tables(['myapp.database.tables.*])
@@ -71,25 +73,25 @@ class Wiki(ServiceProvider, Cli, Db, Http):
         ])
 
         # Define view and asset paths and configure the templating system
-        self.load_views()
+        self.define_views()
 
         # Define Web and API routers
-        self.load_routes()
+        self.define_routes()
 
         # Define CLI commands to be added to the ./uvicore command line interface
-        self.load_commands()
+        self.define_commands()
 
-    def load_views(self) -> None:
+    def define_views(self) -> None:
         """Define view and asset paths and configure the templating system"""
 
         # Define view paths
         self.views(['mreschke.wiki.http.views'])
 
+        # Define public paths
+        self.public(['mreschke.wiki.http.public'])
+
         # Define asset paths
-        self.assets([
-            'mreschke.wiki.http.static2',  #foundation example - BLUE
-            'mreschke.wiki.http.static',     # wiki override example - RED
-        ])
+        self.assets(['mreschke.wiki.http.public.assets'])
 
         def url_method(context: dict, name: str, **path_params: any) -> str:
             request = context["request"]
@@ -128,12 +130,18 @@ class Wiki(ServiceProvider, Cli, Db, Http):
         # Optionally, hack jinja to add anything possible like so
         #app.jinja.env.globals['whatever'] = somefunc
 
-    def load_routes(self) -> None:
+    def define_routes(self) -> None:
         """Define Web and API prefix and routers"""
-        self.web_routes('mreschke.wiki.http.routes.web.Web', self.package.config.route.web_prefix)
-        self.api_routes('mreschke.wiki.http.routes.api.Api', self.package.config.route.api_prefix)
+        self.web_routes(
+            module='mreschke.wiki.http.routes.web.Web',
+            prefix=self.package.config.route.web_prefix
+        )
+        self.api_routes(
+            module='mreschke.wiki.http.routes.api.Api',
+            prefix=self.package.config.route.api_prefix
+        )
 
-    def load_commands(self) -> None:
+    def define_commands(self) -> None:
         """Define CLI commands to be added to the ./uvicore command line interface"""
 
         self.commands({

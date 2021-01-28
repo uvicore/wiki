@@ -1,26 +1,46 @@
 {% extends "wiki/layout.j2" %}
-
-
-
 {% block content %}
 
-This is about jinja2
-<br>
 
-{{url('about')}}
-<br>
+<h3 class="text-lg leading-6 font-medium text-gray-900">
+    This is about jinja2
+</h3>
 
-{{url2('about')}}
-<br>
+<div class="bg-white overflow-hidden shadow rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+        Example of building a Link from a route name
+        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+            <a href="{{ url('about') }}">{{ url('about') }}</a> | <a href="{{ url('about2') }}">{{ url('about2') }}</a>
+        </p>
+  </div>
+</div>
 
-{{"asdfasdasdf" | up}}
-<br>
 
-{% if 42 is prime %}
-    42 is a prime number
-{% else %}
-    42 is not a prime number
-{% endif %}
-<br>
+
+<div class="bg-white overflow-hidden shadow rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+        Example of custom jinja2 uppercase "filter"
+        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+            {{"asdfasdasdf" | up}}
+        </p>
+  </div>
+</div>
+
+
+<div class="bg-white overflow-hidden shadow rounded-lg">
+    <div class="px-4 py-5 sm:p-6">
+        Example of custom jinja2 prime "test"
+        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+
+            {% if 42 is prime %}
+                42 is a prime number
+            {% else %}
+                42 is not a prime number
+            {% endif %}
+
+        </p>
+  </div>
+</div>
+
 
 {% endblock content %}

@@ -11,7 +11,7 @@ config = {
     # Or like so, no underscores, so in dot notation config('blog.route.prefix')
     # have to do deep merges
     'route': {
-        'web_prefix': '/wiki',
+        'web_prefix': '',
         'api_prefix': '/wiki/api',
     },
 

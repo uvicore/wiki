@@ -10,11 +10,19 @@ const mix = require('laravel-mix');
  | file for the application as well as bundling up all the JS files.
  |
  */
-base = 'jdbill/marketing/http'
+base = 'mreschke/wiki/http'
+
+mix.options({
+    publicPath: `${base}/public`,
+    hmrOptions: {
+        host: 'localhost',
+        port: 5001
+    }
+})
 
 
-mix.js(`${base}/assets/js/app.js`, `${base}/static/js`)
-    .postCss(`${base}/assets/css/app.css`, `${base}/static/css`, [
+mix.js(`${base}/assets/js/app.js`, `${base}/public/assets/js`)
+    .postCss(`${base}/assets/css/app.css`, `${base}/public/assets/css`, [
         require("tailwindcss"),
     ])
     .extract(['vue']);

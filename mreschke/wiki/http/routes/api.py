@@ -1,3 +1,5 @@
+import uvicore
+from uvicore.typing import List, Any
 from uvicore.http import ApiRouter, Routes
 from uvicore.support.dumper import dump, dd
 from uvicore import app, config
@@ -10,6 +12,22 @@ class Api(Routes[ApiRouter]):
     def register(self):
         # Available instance variables:
         # self.app, self.package, self.Router, self.prefix
+
+
+
+        # Auto API Experiment
+        #self.include(AutoApi().routes(), tags=['Model API'])
+
+
+
+
+
+
+
+
+
+
+
 
         # If you defined a self.endpoints you can use string based module lookup
         self.include('post', tags=['Posts'])
@@ -33,21 +51,21 @@ class Api(Routes[ApiRouter]):
         #     return {"hello":"world"}
 
         # If you really wanted to define inline routes, have to do it like this
-        route = self.Router()
-        @route.get('/hello')
-        async def hello():
-            return {"hello":"world"}
-        self.include(route, tags=['extra'])
+        # route = self.Router()
+        # @route.get('/hello')
+        # async def hello():
+        #     return {"hello":"world"}
+        # self.include(route, tags=['extra'])
 
 
 
         # Example adding a second router to define different tags
         # Simply make a new Router() and another self.include()
-        route = self.Router()
-        @route.get('/hello2')
-        async def hello2():
-            return {"hello":"world2"}
-        self.include(route, tags=['extra2'])
+        # route = self.Router()
+        # @route.get('/hello2')
+        # async def hello2():
+        #     return {"hello":"world2"}
+        # self.include(route, tags=['extra2'])
 
 
         # from fastapi.responses import HTMLResponse

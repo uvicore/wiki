@@ -4,6 +4,8 @@ from uvicore.support.dumper import dd, dump
 
 route = WebRouter()
 
+# If no name like 'about' is defined, the path is used
+
 @route.get('/about', 'about')
 async def about(request: Request):
     # Example Jinja2 Template
