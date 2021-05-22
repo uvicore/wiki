@@ -20,6 +20,18 @@ async def cli():
     """Play asdfasdfasdfasdf"""
 
 
+    from mreschke.wiki.models import Post
+    post = await Post.query().include('format').find(1)
+    dd(post)
+
+
+
+
+
+
+    dd('DONE')
+
+
     from uvicore.typing import Dict, OrderedDict, Optional
 
 

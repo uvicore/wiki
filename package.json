@@ -8,7 +8,6 @@
         "hot": "mix watch --hot",
         "prod": "npm run production",
         "production": "mix --production",
-
         "OLDdev": "npm run development",
         "OLDdevelopment": "NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --config=node_modules/laravel-mix/setup/webpack.config.js",
         "OLDwatch": "npm run development -- --watch",
@@ -17,9 +16,9 @@
         "OLDprod": "npm run production",
         "OLDproduction": "NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
-    "dependencies": {},
     "devDependencies": {
         "@vue/compiler-sfc": "^3.0.5",
+        "axios": "^0.21.1",
         "laravel-mix": "^6.0.6",
         "lodash": "^4.17.20",
         "postcss": "^8.2.4",

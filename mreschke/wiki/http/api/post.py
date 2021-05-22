@@ -1,38 +1,40 @@
-from typing import List
+import uvicore
+from uvicore.typing import List, Optional
+from mreschke.wiki import models
+from uvicore.http.routing import ApiRouter, Controller
+from uvicore.http.exceptions import NotFound
 
-from mreschke.wiki.models.post import Post
-from uvicore.http import ApiRouter
+from uvicore.http.routing import Guard
 
-route = ApiRouter()
 
-#@route.get('/users', response_model=List[User], include_in_schema=False)
-@route.get('/posts', response_model=List[Post])
-async def posts():
-    #return {'endpoint': 'users'}
-    # Fake user as DB is not working yet
-    return await Post.query().get()
-    # return [
-    #     {
-    #         "id": 1,
-    #         "name": "Matthew"
-    #     },
-    #     {
-    #         "id": 2,
-    #         "name": "Taylor"
-    #     },
+@uvicore.controller()
+class Post(Controller):
+
+    # Method 1 (preferred)
+    scopes = ['authenticated']
+
+    # Method 2
+    #auth = Guard(['authenticated'])
+
+    # Method 3
+    # middleware = [
+    #     Guard(['authenticated'])
     # ]
-    #rows = await User.all()
-    #return rows
 
+    def register(self, route: ApiRouter):
 
-@route.get('/post/{id}', response_model=Post)
-async def post(id: int):
-    return await Post.query().find(id)
-    # Fake user as DB is not working yet
-    # return {
-    #     "id":1,
-    #     "slug":"bar-million-feeling-provide-third",
-    #     "title":"Bar million feeling provide third.",
-    #     "creator_id":1,
-    #     "creator":None
-    # }
+        @route.get('/posts')
+        #@route.get('/posts', scopes=['authenticated'])
+        async def posts(include: Optional[str] = '') -> List[models.Post]:
+            includes = include.split(',') if include else []
+            return await models.Post.query().include(*includes).get()
+
+        @route.get('/posts/{id}')
+        async def post(id: int, include: Optional[str] = '') -> models.Post:
+            includes = include.split(',') if include else []
+            result = await models.Post.query().include(*includes).find(id)
+            if not result: raise NotFound
+            return result
+
+        # Return router
+        return route

@@ -8,11 +8,7 @@
 
     <link rel="stylesheet" href="{{ asset('wiki/css/app.css') }}">
 </head>
-<body class="bg-gray-800 pb-32">
-
-
-
-
+<body id="app" class="bg-gray-800 pb-32">
 
 
 <!-- This example requires Tailwind CSS v2.0+ -->
@@ -29,9 +25,9 @@
                             <div class="hidden md:block">
                                 <div class="ml-10 flex items-baseline space-x-4">
                                     <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-                                    <a href="{{ url('home') }}" class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">Home</a>
-                                    <a href="{{ url('about') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">About</a>
-                                    <a href="{{ url('about2') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">About2</a>
+                                    <a href="{{ url('wiki.home') }}" class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                                    <a href="{{ url('wiki.about') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">About</a>
+                                    <a href="{{ url('wiki.about2') }}" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">About2</a>
                                 </div>
                             </div>
                         </div>

@@ -9,12 +9,12 @@ async def seed():
     log.item('Seeding table posts')
     posts = []
     fake = Faker()
-    for _ in range(2):
+    for _ in range(100):
         title = fake.text(max_nb_chars=50)
         post = Post(
             slug=fake.slug(title),
             title=title,
-            body=fake.paragraph(np_sentences=5),
+            body=fake.paragraph(nb_sentences=5),
             format_key='md',
             creator_id=1,
             updator_id=1,
@@ -22,5 +22,6 @@ async def seed():
         #post.save()
         posts.append(post)
 
-    await Post.insert(posts)
     #dump(posts)
+    await Post.insert(posts)
+

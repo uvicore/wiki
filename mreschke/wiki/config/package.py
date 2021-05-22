@@ -1,3 +1,4 @@
+from uvicore.configuration import env
 from uvicore.typing import OrderedDict
 
 # This is the main wiki config.  All items here can be overridden
@@ -6,57 +7,66 @@ from uvicore.typing import OrderedDict
 config = {
 
     # --------------------------------------------------------------------------
-    # Route Configuration
+    # Web Configuration
+    #
+    # prefix: All web routes will be prefixed with this URI. Ex: '' or '/wiki'
+    #         This is in addition to running apps web.prefix config
     # --------------------------------------------------------------------------
-    # Or like so, no underscores, so in dot notation config('blog.route.prefix')
-    # have to do deep merges
-    'route': {
-        'web_prefix': '',
-        'api_prefix': '/wiki/api',
+    'web': {
+        'prefix': '',
     },
 
-    # mode?  Standalone, library?
-    # If each app comes with a full set of auth tables (user, roles, perm...)
-    # But you INCLUDE it as a LIB, it should't make those tables twice
-    # Must share the auth system, only uses the HOSTS auth tables
-    # Host/guest?  App/Library NO, becuase apps are apps and libraries
-    # Package.  Package can be APP or LIB?
+    # --------------------------------------------------------------------------
+    # Api Configuration
+    #
+    # prefix: All api routes will be prefixed with this URI. Ex: '' or '/wiki'
+    #         This is in addition to running apps api.prefix config
+    # --------------------------------------------------------------------------
+    'api': {
+        'prefix': '',
+    },
 
 
-    # When you say APP, you don't know if its the host or the guest
-    # So cannot say APP MODE
-    # Standalone has to have word APP after it, standalone mode or standalone app
+    # --------------------------------------------------------------------------
+    # Database Connections
+    # --------------------------------------------------------------------------
+    'database': {
+        'default': 'wiki',
+        'connections': {
+            'wiki': {
+                'driver': env('DB_WIKI_DRIVER', 'mysql'),
+                'dialect': env('DB_WIKI_DIALECT', 'pymysql'),
+                'host': env('DB_WIKI_HOST', '127.0.0.1'),
+                'port': env.int('DB_WIKI_PORT', 3306),
+                'database': env('DB_WIKI_DB', 'wiki'),
+                'username': env('DB_WIKI_USER', 'root'),
+                'password': env('DB_WIKI_PASSWORD', 'techie'),
+                'prefix': env('DB_WIKI_PREFIX', None),
+            },
+        },
+    },
 
 
-    # # --------------------------------------------------------------------------
-    # # Database Connections
-    # # --------------------------------------------------------------------------
-    # 'database': {
-    #     'default': 'wiki',
-    #     'connections': {
-    #         'wiki': {
-    #             'driver': 'mysql',
-    #             'dialect': 'pymysql',
-    #             'host': '127.0.0.1',
-    #             'port': 3306,
-    #             'database': 'uvicore_wiki',
-    #             'username': 'root',
-    #             'password': 'techie',
-    #             'prefix': None,
-    #             #'include_connections': ['auth']
-    #         },
-    #         # 'some-sql': {
-    #         #     'driver': 'mysql',
-    #         #     'dialect': 'pymysql',
-    #         #     'host': '127.0.0.1',
-    #         #     'port': 3306,
-    #         #     'database': 'somesql',
-    #         #     'username': 'root',
-    #         #     'password': 'techie',
-    #         #     'prefix': None,
-    #         # },
-    #     },
-    # },
+    # --------------------------------------------------------------------------
+    # Redis Connections
+    # --------------------------------------------------------------------------
+    'redis': {
+        'default': env('REDIS_DEFAULT', 'wiki'),
+        'connections': {
+            'wiki': {
+                'host': env('REDIS_WIKI_HOST', '127.0.0.1'),
+                'port': env.int('REDIS_WIKI_PORT', 6379),
+                'database': env.int('REDIS_WIKI_DB', 0),
+                'password': env('REDIS_WIKI_PASSWORD', None),
+            },
+            'cache': {
+                'host': env('REDIS_CACHE_HOST', '127.0.0.1'),
+                'port': env.int('REDIS_CACHE_PORT', 6379),
+                'database': env.int('REDIS_CACHE_DB', 2),
+                'password': env('REDIS_CACHE_PASSWORD', None),
+            },
+        },
+    },
 
 
     # --------------------------------------------------------------------------
@@ -86,8 +96,8 @@ config = {
     # the uvicore.foundation package is required.  The foundation is very
     # minimal and only depends on configuratino, logging and console itself.
     # You must add other core services built into uvicore only if your package
-    # requires them.  Services like uvicore.database, uvicore.orm, uvicore.http
-    # uvicore.auth...
+    # requires them.  Services like uvicore.database, uvicore.orm, uvicore.auth
+    # uvicore.http, etc...
     # --------------------------------------------------------------------------
     'dependencies': OrderedDict({
         # Wiki uses database, orm, auth, http
@@ -100,11 +110,11 @@ config = {
         'uvicore.orm': {
             'provider': 'uvicore.orm.services.Orm',
         },
-        'uvicore.http': {
-            'provider': 'uvicore.http.services.Http',
-        },
         'uvicore.auth': {
             'provider': 'uvicore.auth.services.Auth',
+        },
+        'uvicore.http': {
+            'provider': 'uvicore.http.services.Http',
         },
     }),
 

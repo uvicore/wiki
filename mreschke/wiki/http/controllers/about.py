@@ -1,24 +1,22 @@
-#from uvicore.http.routing import WebRouter
-from uvicore.http import Request, response, WebRouter
-from uvicore.support.dumper import dd, dump
-
-route = WebRouter()
-
-# If no name like 'about' is defined, the path is used
-
-@route.get('/about', 'about')
-async def about(request: Request):
-    # Example Jinja2 Template
-    return response.View('wiki/about.j2', {'request': request})
-
-    # Other example responses
-    #return response.Text('Text Here')
-    #return response.HTML('<b>HTML</b> here')
-    #return response.JSON({'json':'here'})
-    #return response.UJSON({'json':'here'}) # requiest ujson dependency
-    # and more ...
+import uvicore
+from uvicore.http import Request, response
+from uvicore.http.routing import WebRouter, Controller
 
 
-@route.get('/about2')
-async def about2(request):
-    return response.Text('/about2 plain text')
+@uvicore.controller()
+class About(Controller):
+
+    def register(self, route: WebRouter):
+
+        @route.get('/about', name='about')
+        async def home(request: Request):
+            return response.View('wiki/about.j2', {
+                'request': request
+            })
+
+        @route.get('/about2')
+        async def about2(request: Request):
+            return response.Text('/about2 plain text')
+
+        # Return router
+        return route

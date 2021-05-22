@@ -1,10 +1,11 @@
 from __future__ import annotations
-from typing import Optional
 import uvicore
-from uvicore.orm import BelongsTo, Field, Model, ModelMetaclass
+from typing import Optional
+from uvicore.auth.models import User
+from mreschke.wiki.models import Format
 from uvicore.support.dumper import dd, dump
 from mreschke.wiki.database.tables import posts as table
-
+from uvicore.orm import BelongsTo, Field, Model, ModelMetaclass
 
 @uvicore.model()
 class Post(Model['Post'], metaclass=ModelMetaclass):
@@ -57,14 +58,21 @@ class Post(Model['Post'], metaclass=ModelMetaclass):
         default=False,
     )
 
+    # space_id: int = Field('space_id',
+    #     description='Space ID',
+    #     required=True,
+    # )
+
+
     creator_id: int = Field('creator_id',
         description='Post Creator UserID',
         required=True,
-        read_only=True,
     )
 
+    # One-To-Many Inverse (One Post has One Creator)
     creator: Optional[User] = Field(None,
         description="Post Creator User Model",
+        #relation=BelongsTo('uvicore.auth.models.user.User', 'id', 'creator_id'),
         relation=BelongsTo('uvicore.auth.models.user.User'),
     )
 
@@ -90,7 +98,6 @@ class Post(Model['Post'], metaclass=ModelMetaclass):
         description='Post Last Indexed DateTime',
     )
 
+
 # Import relation models at the bottom and update forward refs
-from uvicore.auth.models import User
-from mreschke.wiki.models import Format
-Post.update_forward_refs()
+#Post.update_forward_refs()
