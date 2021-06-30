@@ -173,8 +173,8 @@ config = {
         'oauth2': {
             'client_id': env('AUTH_OAUTH2_CLIENT_ID', 'xyz'),
             'base_url': env('AUTH_OAUTH2_BASE_URL', 'https://my_fusionauth_gluu_keycloke_auth0_okta.com'),
-            'authorize_path': env('AUTH_OAUTH2_AUTHORIZE_URI', '/oauth2/authorize'),
-            'token_path': env('AUTH_OAUTH2_TOKEN_URI', '/oauth2/token'),
+            'authorize_path': env('AUTH_OAUTH2_AUTHORIZE_PATH', '/oauth2/authorize'),
+            'token_path': env('AUTH_OAUTH2_TOKEN_PATH', '/oauth2/token'),
         },
 
         # Web route authenticators and user providers
@@ -476,12 +476,13 @@ config = {
 
     # --------------------------------------------------------------------------
     # Cache Configuration
+    # If no cache config defined, the default of 'array' caching will be used
     # --------------------------------------------------------------------------
     'cache': {
-        'default': env('CACHE_STORE', 'redis'),
+        'default': env('CACHE_STORE', 'redis'),  # redis, array, disabled
         'stores': {
             'redis': {
-                'driver': 'uvicore.cache.backends.Redis',
+                'driver': 'uvicore.cache.backends.redis.Redis',
                 'connection': 'cache',
                 'prefix': env('CACHE_PREFIX', 'mreschke.wiki::cache/'),
                 'seconds': env.int('CACHE_EXPIRE', 600),  # 0=forever
@@ -506,7 +507,7 @@ config = {
             'colors': env.bool('LOG_CONSOLE_COLORS', True),
             'filters': [],
             'exclude': [
-                'uvicore',
+                'uvicore.orm',
                 'databases',
             ],
         },
@@ -518,7 +519,10 @@ config = {
             'interval': 1,
             'backup_count': 7,
             'filters': [],
-            'exclude': [],
+            'exclude': [
+                'uvicore.orm',
+                'databases',
+            ],
         }
     },
 

@@ -11,7 +11,7 @@ from uvicore.http.routing import Guard
 class Post(Controller):
 
     # Method 1 (preferred)
-    scopes = ['authenticated']
+    #scopes = ['authenticated']
 
     # Method 2
     #auth = Guard(['authenticated'])

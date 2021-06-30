@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import uvicore
-from typing import Optional
+from typing import Optional, List
 from uvicore.support.dumper import dd, dump
-from uvicore.orm import Model, ModelMetaclass, BelongsTo, Field
+from uvicore.orm import Model, ModelMetaclass, HasMany, Field
 from mreschke.wiki.database.tables import spaces as table
 
 
@@ -25,11 +25,6 @@ class Space(Model['Space'], metaclass=ModelMetaclass):
         required=True,
     )
 
-    section: str = Field('section',
-        description='Space Section',
-        required=True,
-    )
-
     name: str = Field('name',
         description='Space Name',
         required=True,
@@ -39,3 +34,14 @@ class Space(Model['Space'], metaclass=ModelMetaclass):
         description='Space Display Order',
         required=True
     )
+
+    # One-To-Many (One Space has Many Sections)
+    sections: Optional[List[Section]] = Field(None,
+        description='Space Sections Model',
+        relation=HasMany('mreschke.wiki.models.Section', foreign_key='space_id')
+    )
+
+
+# Update forwrad refs (a work around to circular dependencies)
+from mreschke.wiki.models.section import Section
+Space.update_forward_refs()

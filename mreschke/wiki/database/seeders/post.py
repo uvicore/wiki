@@ -1,4 +1,5 @@
 import uvicore
+import random
 from uvicore import log
 from faker import Faker
 from mreschke.wiki.models.post import Post
@@ -10,12 +11,15 @@ async def seed():
     posts = []
     fake = Faker()
     for _ in range(100):
+        topic_id = random.randint(1, 15)
         title = fake.text(max_nb_chars=50)
         post = Post(
             slug=fake.slug(title),
             title=title,
             body=fake.paragraph(nb_sentences=5),
             format_key='md',
+            topic_id=topic_id,
+            view_count=0,
             creator_id=1,
             updator_id=1,
         )

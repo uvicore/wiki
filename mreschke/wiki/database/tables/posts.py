@@ -6,6 +6,7 @@ from uvicore.support.dumper import dump, dd
 # Get related tablenames with proper prefixes
 users = uvicore.db.tablename('auth.users')
 formats = uvicore.db.tablename('wiki.formats')
+topic = uvicore.db.tablename('wiki.topics')
 
 
 @uvicore.table()
@@ -23,22 +24,23 @@ class Posts(Table):
     # This will be converted into an actual SQLAlchemy Table() instance
     # See https://docs.sqlalchemy.org/en/13/core/schema.html
     schema = [
-        # Defaults
-        #   nullable = False
+        # SqlAlchemy Defaults
+        #   nullable=True, unique=False
 
         sa.Column('id', sa.Integer, primary_key=True),
-        sa.Column('slug', sa.String(length=100), unique=True),
-        sa.Column('title', sa.String(length=100)),
-        sa.Column('body', sa.Text()),
+        sa.Column('slug', sa.String(length=100), unique=True, nullable=False),
+        sa.Column('title', sa.String(length=100), nullable=False),
+        sa.Column('body', sa.Text(), default='', nullable=False),
         sa.Column('format_key', sa.String(length=3), sa.ForeignKey(f"{formats}.key"), nullable=False),
-        sa.Column('view_count', sa.Integer),
-        sa.Column('deleted', sa.Boolean(), default=False),
-        sa.Column('hidden', sa.Boolean(), default=False),
+        sa.Column('topic_id', sa.Integer, sa.ForeignKey(f"{topic}.id"), nullable=False),
+        sa.Column('view_count', sa.Integer, default=0, nullable=False),
+        sa.Column('deleted', sa.Boolean(), default=False, nullable=False),
+        sa.Column('hidden', sa.Boolean(), default=False, nullable=False),
         sa.Column('creator_id', sa.Integer, sa.ForeignKey(f"{users}.id"), nullable=False),
         sa.Column('updator_id', sa.Integer, sa.ForeignKey(f"{users}.id"), nullable=False),
-        sa.Column('created_at', sa.DateTime()),
-        sa.Column('updated_at', sa.DateTime()),
-        sa.Column('indexed_at', sa.DateTime()),
+        sa.Column('created_at', sa.DateTime(), default=sa.func.now(), nullable=False),
+        sa.Column('updated_at', sa.DateTime(), default=sa.func.now(), onupdate=sa.func.now(), nullable=False),
+        sa.Column('indexed_at', sa.DateTime(), nullable=True),
     ]
 
     # Optional SQLAlchemy Table() instance kwargs

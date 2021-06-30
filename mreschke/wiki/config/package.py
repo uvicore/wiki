@@ -104,6 +104,9 @@ config = {
         'uvicore.foundation': {
             'provider': 'uvicore.foundation.services.Foundation',
         },
+        'uvicore.redis': {
+            'provider': 'uvicore.redis.services.Redis',
+        },
         'uvicore.database': {
             'provider': 'uvicore.database.services.Database',
         },
@@ -115,6 +118,9 @@ config = {
         },
         'uvicore.http': {
             'provider': 'uvicore.http.services.Http',
+        },
+        'mreschke.fusionauth': {
+            'provider': 'mreschke.fusionauth.services.fusionauth.Fusionauth',
         },
     }),
 

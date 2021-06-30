@@ -1,4 +1,5 @@
 #import typer
+import json
 import uvicore
 from typing import List
 from uvicore.console import command
@@ -17,16 +18,74 @@ from uvicore.support.dumper import dump, dd
 
 @command()
 async def cli():
+    #await misc()
+    #await query_post_by_slug()
+    await query_spaces()
+    #await url_query()
+
+
+async def url_query():
+
+    where = """{
+    "id": 1,
+    "name": ["like", "some name"],
+    "email": ["in", ["one", "two"]]
+}"""
+
+    dump('where=' + str(json.loads(where)))
+    dump("DONE!")
+
+
+async def query_post_by_slug():
+
+    from mreschke.wiki.models import Post
+    posts = await (Post.query()
+        .include('topic.section.space')
+        # /dev/apps/tools
+        .where('topic.slug', '/tools')
+        .where('topic.section.slug', '/apps')
+        .where('topic.section.space.slug', '/dev')
+        .get()
+    )
+    dump(posts)
+    dump(len(posts))
+    dump("DONE!")
+
+
+async def query_spaces():
+    from mreschke.wiki.models import Space
+    spaces = await (Space.query()
+        .include('sections', 'sections.topics')
+        .where('sections.name', 'Production')
+        .order_by('order')
+        .sort(['sections.order', 'sections.topics.order'])
+        .get()
+    )
+    dump(spaces)
+
+    dump("DONE!")
+
+
+
+async def misc():
     """Play asdfasdfasdfasdf"""
 
 
-    from mreschke.wiki.models import Post
-    post = await Post.query().include('format').find(1)
-    dd(post)
+    # The reverse
+    # from mreschke.wiki.models import SpaceSectionTopic
+    # topics = await SpaceSectionTopic.query().include('section.space').get()
+    # dd(topics)
 
 
-
-
+    # from uvicore.auth.models import User
+    # user = await (User.query()
+    #     .where('disabled', '1')
+    #     .include('groups')
+    #     #.find(username='anonymous')
+    #     .find(1)
+    # )
+    # dd(user)
+    # #['roles', 'roles.permissions', 'groups', 'groups.roles', 'groups.roles.permissions']
 
 
     dd('DONE')
