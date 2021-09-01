@@ -130,7 +130,8 @@ config = {
             # 'CORS': {
             #     'module': 'uvicore.http.middleware.CORS',
             #     'options': {
-            #         'allow_origins': env.list('CORS_ALLOW_ORIGINS', ['127.0.0.1', 'localhost']),
+            #         # Allow origins are full protocol://domain:port, ie: http://127.0.0.1:5000
+            #         'allow_origins': env.list('CORS_ALLOW_ORIGINS', ['http://127.0.0.1:5000', 'http://0.0.0.0:5000', 'http://localhost:5000']),
             #         'allow_methods': env.list('CORS_ALLOW_METHODS', ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']),
             #         'allow_headers': [],
             #         'allow_credentials': False,
@@ -175,6 +176,7 @@ config = {
             'base_url': env('AUTH_OAUTH2_BASE_URL', 'https://my_fusionauth_gluu_keycloke_auth0_okta.com'),
             'authorize_path': env('AUTH_OAUTH2_AUTHORIZE_PATH', '/oauth2/authorize'),
             'token_path': env('AUTH_OAUTH2_TOKEN_PATH', '/oauth2/token'),
+            'jwks_path': env('AUTH_OAUTH2_JWKS_PATH', '/.well-known/jwks.json'),
         },
 
         # Web route authenticators and user providers
@@ -187,7 +189,7 @@ config = {
                 # If redirect defined, redirect to this URL on authentication or authorization failures.
                 # If '/' found in redirect it will use the redirect as a URL.  If no / and a . is found
                 # it will be used as a route name.  Referer ?referer=page automatically added
-                'redirect': 'wiki.login',
+                #'redirect': 'wiki.login',
 
                 # If no redirect defined a PermissionDenied or NotAuthenticated exception is thrown
                 # You can specify custom headers to be thwon with those exceptions.  Useful for Basic Auth
@@ -219,18 +221,6 @@ config = {
         'api': {
             # Default provider used for anonymous retrieval and for authenticators that do not specify their own
             'default_provider': 'user_model',
-
-            # Unauthenticated handler
-            # 'unauthenticated_handler': {
-            #     # If no redirect defined a PermissionDenied or NotAuthenticated exception is thrown
-            #     # You can specify custom headers to be thwon with those exceptions.  Useful for Basic Auth
-            #     # WWW-Authenticate headers to prompt a brower based login prompt.
-            #     'exception': {
-            #         'headers': {
-            #             'WWW-Authenticate': 'Basic realm="Wiki Web Realm"'
-            #         },
-            #     },
-            # },
 
             # Authenticators, multiples allow many forms of authentication
             'authenticators': {
@@ -328,7 +318,8 @@ config = {
                 'anonymous_header': 'x-anonymous-consumer',  # Set to None to skip header checks
 
                 # Settings used when the user auth and JWT did not originate from this app itself
-                # but from an external Identity Provider
+                # but from an external Identity Provider. We want to create and sync the external IDP
+                # user to uvicore's internal user/group/roles tables.
                 'auto_create_user': True,
                 'auto_create_user_jwt_mapping': {
                     # FusionAuth JWT Mappings
@@ -342,16 +333,36 @@ config = {
                     'creator_id': 1,
                     'groups': lambda jwt: jwt['roles'],
                 },
-                # Periodically sync user info, roles and groups from the JWT
-                # Does not sync on every request but is buffered with the default cache TTL seconds.
-                'sync_user': True,
 
-                # JWT Validation
-                'verify_signature': env.bool('API_JWT_VERIFY_SIGNATURE', True),  # False only if a local upstream API gateway has already pre-validated
-                'audience': env('API_JWT_AUDIENCE', 'xyz'),  # External IDP App ID
-                'algorithms': env.list('API_JWT_ALGORITHMS', ['RS256']),
-                # Secret only required if verify_sugnature=True
-                'secret': env('API_JWT_SECRET', '-----BEGIN PUBLIC KEY-----\nMIIB...AQAB\n-----END PUBLIC KEY-----'),
+                # Periodically sync user info, roles and groups from the JWT
+                # Does not sync on every request but is buffered with the TTL seconds.
+                'sync_user': True,
+                'sync_user_ttl': env.int('API_JWT_SYNC_USER_TTL', 600),
+
+                # Validate JWT Signature
+                # Set to False only if an upstream API gateway (like Kong) has already pre-validated the JWT
+                'verify_signature': env.bool('API_JWT_VERIFY_SIGNATURE', True),
+                'verify_signature_method': env('API_JWT_VERIFY_SIGNATURE_METHOD', 'secret'),  # secret, jwks
+                'jwks_query_cache_ttl': env.int('API_JWT_JWKS_QUERY_CACHE_TTL', 300),
+
+                # Validate JWT audience (aud) claim
+                # Set to False only if an upstream API gateway (like Kong) has already pre-validated the JWT
+                # Only applies if verify_signature is False, uvicore may still verify audience.
+                'verify_audience': env.bool('API_JWT_VERIFY_AUDIENCE', True),
+
+                # Allowed consumers
+                # List of all oauth2 consumers allowed to access this API.  Verification only performed
+                # by uvicore if 'verify_signature' is True.  Verification method can be direct secret or
+                # jwks lookups.  If 'verify_signature' if False, but 'verify_audience' is true
+                # this dictionary only needs the 'aud' keys defined.
+                'consumers': {
+                    'wiki-vue-app': {
+                        'aud': '7cc7d2a5-cc02-43ca-93bc-8476370ebf9d',
+                        #'jwks_url': 'optional override per consumer from default in oauth2 config above',
+                        'algorithms': ['RS256'],
+                        'secret': env('API_JWT_CONSUMER_WIKI', 'begin public key...used if method is secret'),
+                    },
+                },
             },
         },
     },
@@ -401,11 +412,6 @@ config = {
         # 'uvicore.logging': {
         #     'provider': 'mreschke.wiki.overrides.services.logging.Logging',
         # },
-
-        # # Example
-        # 'uvicore.console': {
-        #     'provider': 'mreschke.wiki.overrides.services.console.Console',
-        # },
     }),
 
 
@@ -418,21 +424,7 @@ config = {
     # and other 3rd party packages (assuming they are using the IoC correctly).
     # --------------------------------------------------------------------------
     'bindings': {
-        # Low level core uvicore libraries
-        # 'Application': 'mreschke.wiki.overrides.application.Application',
-        # 'ServiceProvider': 'mreschke.wiki.overrides.provider.ServiceProvider',
-        # 'Package': 'mreschke.wiki.overrides.package.Package',
-
-        # Higher level uvicore libraries
-        # 'Logger': 'mreschke.wiki.overrides.logger.Logger',
-        # 'Configuration': 'mreschke.wiki.overrides.configuration.Configuration',
-        # 'Console': 'mreschke.wiki.overrides.console.cli',
-        # 'Http': 'mreschke.wiki.overrides.server.Server',
-        # 'WebRouter': 'mreschke.wiki.overrides.web_router.WebRouter',
-        # 'ApiRouter': 'mreschke.wiki.overrides.api_router.ApiRouter',
-        # 'Routes': 'mreschke.wiki.overrides.routes.Routes',
-        # 'StaticFiles': 'mreschke.wiki.overrides.static.StaticFiles',
-        # 'Templates': 'mreschke.wiki.overrides.templates.Templates',
+        #
     },
 
 
@@ -469,8 +461,8 @@ config = {
                 'ssl': env.bool('MAIL_SMTP_SSL', False),
             }
         },
-        'from_name': env('MAIL_FROM_NAME', 'Uvicore'),
-        'from_address': env('MAIL_FROM_ADDRESS', 'uvicore@example.com'),
+        'from_name': env('MAIL_FROM_NAME', 'Wiki'),
+        'from_address': env('MAIL_FROM_ADDRESS', 'wiki@example.com'),
     },
 
 
@@ -479,7 +471,7 @@ config = {
     # If no cache config defined, the default of 'array' caching will be used
     # --------------------------------------------------------------------------
     'cache': {
-        'default': env('CACHE_STORE', 'redis'),  # redis, array, disabled
+        'default': env('CACHE_STORE', 'redis'),  # redis, array
         'stores': {
             'redis': {
                 'driver': 'uvicore.cache.backends.redis.Redis',
@@ -508,20 +500,33 @@ config = {
             'filters': [],
             'exclude': [
                 'uvicore.orm',
+                #'uvicore.http',
+                'uvicore.auth',
                 'databases',
+                'aioredis',
+
+                # Wiki only
+                'MARKDOWN',
             ],
         },
         'file': {
             'enabled': env.bool('LOG_FILE_ENABLED', True),
             'level': env('LOG_FILE_LEVEL', 'INFO'),
+            'file': env('LOG_FILE_PATH', '/tmp/mreschke.wiki.log'),
             'file': '/tmp/mreschke.wiki.log',
-            'when': 'midnight',
-            'interval': 1,
-            'backup_count': 7,
+            'when': env('LOG_ROTATE_WHEN', 'midnight'),
+            'interval': env.int('LOG_ROTATE_INTERVAL', 1),
+            'backup_count': env.int('LOG_ROTATE_BACKUP_COUNT', 7),
             'filters': [],
             'exclude': [
                 'uvicore.orm',
+                'uvicore.http',
+                'uvicore.auth',
                 'databases',
+                'aioredis',
+
+                # Wiki only
+                'MARKDOWN',
             ],
         }
     },

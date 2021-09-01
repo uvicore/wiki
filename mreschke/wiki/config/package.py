@@ -119,9 +119,9 @@ config = {
         'uvicore.http': {
             'provider': 'uvicore.http.services.Http',
         },
-        'mreschke.fusionauth': {
-            'provider': 'mreschke.fusionauth.services.fusionauth.Fusionauth',
-        },
+        # 'mreschke.fusionauth': {
+        #     'provider': 'mreschke.fusionauth.services.fusionauth.Fusionauth',
+        # },
     }),
 
 }

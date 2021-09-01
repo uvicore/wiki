@@ -10,6 +10,10 @@ class Api(Routes):
     #scopes = ['authenticated', 'employee']
     #scopes = None
 
+    # HTTP example
+    # TOKEN=$(fa-api tgb-local login wiki-vue-app token)
+    # http GET 'https://wiki-api-local.triglobal.io/api/auth/userinfo' Authorization:"Bearer $TOKEN"
+
     def register(self, route: ApiRouter):
         """Register API Route Endpoints"""
 
@@ -17,21 +21,24 @@ class Api(Routes):
         route.controllers = 'mreschke.wiki.http.api'
 
         # Include dynamic model CRUD API endpoints (the "auto API")!
+        #@route.group(scopes=['authenticated'])
         @route.group()
-        #@route.group(scopes=['x'])  # These scopes are APPENDED to auto api acopes, user must have both
-        #def autoapi():
-        #def autoapi(scopes=['authenticated']):
         def autoapi():
-            # These scopes are used instead of auto api scopes
-            route.include(ModelRouter, options={'scopes': []})
-
-            # This sets NO scopes, meaning fully public API
-            #route.include(ModelRouter, options={'scopes': []})
-
-            # Use default auto api scopes (posts.read, posts.create...)
             #route.include(ModelRouter)
+            route.include(ModelRouter, options={
+                #'scopes': ['autoapi']
+                'scopes': []
+                # 'scopes': {
+                #     'create': ['autoapi.create'],
+                #     #'read': ['autoapi.read'],
+                #     'update': ['autoapi.update'],
+                #     'delete': ['autoapi.delete'],
+                # }
+            })
 
-        #route.controller('post', tags=['Post'])
+
+
+        route.controller('post', tags=['Posts'])
 
         # Return router
         return route

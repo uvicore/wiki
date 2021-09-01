@@ -1,3 +1,4 @@
+const { extract } = require('laravel-mix');
 let mix = require('laravel-mix');
 
 /*
@@ -26,18 +27,21 @@ mix.options({
 })
 
 
-// mix.js(`${base}/assets/js/app.js`, `${base}/public/assets/wiki/js`)
-//     .postCss(`${base}/assets/css/app.css`, `${base}/public/assets/wiki/css`, [
-//         require("tailwindcss"),
-//     ])
-//     .extract(['vue']);
+mix.js(`${base}/assets/js/app.js`, `${base}/public/assets/wiki/js`)
+    .postCss(`${base}/assets/css/app.css`, `${base}/public/assets/wiki/css`, [
+        require("tailwindcss"),
+    ])
+    .extract(['@vue'])
+    //.vue({ version: 3 })
+    .vue()
 
 
-mix.js(`${base}/assets/js/app.js`, `${base}/public/assets/wiki/js`).vue();
 
-mix.postCss(`${base}/assets/css/app.css`, `${base}/public/assets/wiki/css`, [
-    require("tailwindcss"),
-]);
+//mix.js(`${base}/assets/js/app.js`, `${base}/public/assets/wiki/js`).vue();
+
+// mix.postCss(`${base}/assets/css/app.css`, `${base}/public/assets/wiki/css`, [
+//     require("tailwindcss"),
+// ]);
 
 
 

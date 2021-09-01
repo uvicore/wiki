@@ -9,6 +9,34 @@ from uvicore.orm import BelongsTo, Field, Model, ModelMetaclass
 from datetime import datetime
 from mreschke.wiki.models.topic import Topic
 
+import markdown
+
+def to_markdown(row):
+    config = {
+        'extra': {
+            'footnotes': {
+                'UNIQUE_IDS': True
+            },
+            'fenced_code': {
+                'lang_prefix': 'lang-'
+            }
+        },
+        'toc': {
+            'permalink': True
+        }
+    }
+    return markdown.markdown(row['body'],
+        extensions=[
+            'extra',
+            'toc',
+            'sane_lists',
+            'nl2br',
+            'wikilinks',
+        ],
+        extension_configs=config,
+    )
+
+
 @uvicore.model()
 class Post(Model['Post'], metaclass=ModelMetaclass):
     """Wiki Posts"""
@@ -34,6 +62,7 @@ class Post(Model['Post'], metaclass=ModelMetaclass):
 
     body: str = Field('body',
         description='Post Body',
+        evaluate=to_markdown
     )
 
     format_key: str = Field('format_key',
@@ -116,6 +145,7 @@ class Post(Model['Post'], metaclass=ModelMetaclass):
         description='Post Last Indexed DateTime',
         #read_only=True,
     )
+
 
 
 # Import relation models at the bottom and update forward refs

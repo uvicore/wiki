@@ -11,6 +11,10 @@ from uvicore.console import command
 #from sqlalchemy.orm import Session
 from uvicore.support.dumper import dump, dd
 
+
+#from uvicore.http_client import http
+
+
 #from mreschke.wiki import db
 
 # Commands
@@ -20,8 +24,32 @@ from uvicore.support.dumper import dump, dd
 async def cli():
     #await misc()
     #await query_post_by_slug()
-    await query_spaces()
+    #await query_spaces()
     #await url_query()
+    #await http_client_play()
+
+    await play()
+
+
+async def play():
+    x = {
+        'bpi': {
+            'USD': {
+                'code': 'USD CODE'
+            }
+        }
+    }
+    dump(list(x['bpi'].keys())[0])
+    #dump(x['bpi'][x.keys()[0])
+
+async def http_client_play():
+    http = uvicore.ioc.make('aiohttp')
+
+    async with http.get("https://api.coindesk.com/v1/bpi/currentprice.json") as req:
+        res = await req.text()
+        js = json.loads(res)
+        dump(js)
+
 
 
 async def url_query():

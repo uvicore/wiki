@@ -13,8 +13,9 @@ packages = [
 [tool.poetry.dependencies]
 python = ">=3.7,<4.0"
 uvicore = {path = "../framework", develop = true, extras = ["database", "redis", "web"]}
-mreschke-fusionauth = {path = "../fusionauth", develop = true}
 Faker = "6.6.*"
+mdgen = "^0.1.9"
+Markdown = "^3.3.4"
 
 [tool.poetry.dev-dependencies]
 pip-licenses = "3.3.*"

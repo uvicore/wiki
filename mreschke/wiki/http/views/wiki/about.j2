@@ -6,41 +6,6 @@
     This is about jinja2
 </h3>
 
-<div class="bg-white overflow-hidden shadow rounded-lg">
-    <div class="px-4 py-5 sm:p-6">
-        Example of building a Link from a route name
-        <p class="mt-1 max-w-2xl text-sm text-gray-500">
-            <a href="{{ url('wiki.about') }}">{{ url('wiki.about') }}</a> | <a href="{{ url('wiki.about2') }}">{{ url('wiki.about2') }}</a>
-        </p>
-  </div>
-</div>
-
-
-
-<div class="bg-white overflow-hidden shadow rounded-lg">
-    <div class="px-4 py-5 sm:p-6">
-        Example of custom jinja2 uppercase "filter"
-        <p class="mt-1 max-w-2xl text-sm text-gray-500">
-            {{"asdfasdasdf" | up}}
-        </p>
-  </div>
-</div>
-
-
-<div class="bg-white overflow-hidden shadow rounded-lg">
-    <div class="px-4 py-5 sm:p-6">
-        Example of custom jinja2 prime "test"
-        <p class="mt-1 max-w-2xl text-sm text-gray-500">
-
-            {% if 42 is prime %}
-                42 is a prime number
-            {% else %}
-                42 is not a prime number
-            {% endif %}
-
-        </p>
-  </div>
-</div>
 
 
 {% endblock content %}

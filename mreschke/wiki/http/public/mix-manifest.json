@@ -1,4 +1,6 @@
 {
     "/assets/wiki/js/app.js": "/assets/wiki/js/app.js",
-    "/assets/wiki/css/app.css": "/assets/wiki/css/app.css"
+    "/assets/wiki/js/manifest.js": "/assets/wiki/js/manifest.js",
+    "/assets/wiki/css/app.css": "/assets/wiki/css/app.css",
+    "/assets/wiki/js/vendor.js": "/assets/wiki/js/vendor.js"
 }
